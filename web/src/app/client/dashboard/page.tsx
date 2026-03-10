@@ -80,25 +80,25 @@ export default async function ClientDashboardPage() {
             {appointments && appointments.length > 0 ? (
               <div className="mt-4 flex flex-col gap-3 max-h-[300px] overflow-y-auto pr-2">
                 {appointments.map((app) => (
-                  <div key={app.id} className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex flex-col gap-2 relative group overflow-hidden">
+                  <div key={app.id} className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative group overflow-hidden">
                      <div className="absolute top-0 right-0 w-24 h-24 bg-accent-primary/5 rounded-full -mr-10 -mt-10 transition-transform group-hover:scale-150 duration-500"></div>
-                     <p className="text-xl font-bold font-display text-slate-900 relative z-10">
-                       {format(new Date(`${app.date}T${app.time}`), "dd 'de' MMMM, yyyy")}
-                     </p>
-                     <div className="flex flex-col gap-1.5 mt-1 relative z-10">
-                       <p className="text-text-secondary flex items-center gap-1.5 text-sm mb-1">
+                     <div className="flex flex-col relative z-10">
+                       <p className="text-lg md:text-xl font-bold font-display text-slate-900">
+                         {format(new Date(`${app.date}T${app.time}`), "dd 'de' MMMM, yyyy")}
+                       </p>
+                       <p className="text-text-secondary flex items-center gap-1.5 text-sm mt-0.5">
                           <Clock size={14}/> a las {app.time.substring(0, 5)} hrs.
                        </p>
-                       <div className="flex items-center">
-                         <span className={`inline-flex items-center justify-center rounded-full px-3 py-1 border text-xs font-medium uppercase tracking-wider ${
-                           app.status === 'completed' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700' :
-                           app.status === 'confirmed' ? 'bg-blue-500/10 border-blue-500/20 text-blue-700' :
-                           app.status === 'cancelled' ? 'bg-red-500/10 border-red-500/20 text-red-600' :
-                           'bg-amber-500/10 border-amber-500/20 text-amber-700'
-                         }`}>
-                            {app.status === 'confirmed' ? 'Confirmada' : app.status === 'completed' ? 'Completada' : app.status === 'cancelled' ? 'Cancelada' : 'Pendiente'}
-                         </span>
-                       </div>
+                     </div>
+                     <div className="relative z-10 self-start sm:self-auto">
+                       <span className={`inline-flex items-center justify-center rounded-full px-3 py-1 border text-[10px] md:text-xs font-medium uppercase tracking-wider whitespace-nowrap ${
+                         app.status === 'completed' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700' :
+                         app.status === 'confirmed' ? 'bg-blue-500/10 border-blue-500/20 text-blue-700' :
+                         app.status === 'cancelled' ? 'bg-red-500/10 border-red-500/20 text-red-600' :
+                         'bg-amber-500/10 border-amber-500/20 text-amber-700'
+                       }`}>
+                          {app.status === 'confirmed' ? 'Confirmada' : app.status === 'completed' ? 'Completada' : app.status === 'cancelled' ? 'Cancelada' : 'Pendiente'}
+                       </span>
                      </div>
                   </div>
                 ))}
