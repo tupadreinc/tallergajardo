@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { sendStatusEmail } from '@/lib/email'
 
 export async function updateAppointmentStatus(formData: FormData) {
   try {
@@ -25,6 +26,24 @@ export async function updateAppointmentStatus(formData: FormData) {
 
     if (error) {
       return { error: error.message }
+    }
+
+    // Traer cita con perfil para saber email
+    const { data: updatedApp } = await supabase
+      .from('appointments')
+      .select('date, profiles(full_name, id)')
+      .eq('id', id)
+      .single()
+      
+    if (updatedApp?.profiles) {
+       const profile = Array.isArray(updatedApp.profiles) ? updatedApp.profiles[0] : updatedApp.profiles
+       if (profile) {
+         // get user email from admin RPC
+         const { data: userEmail } = await supabase.rpc('get_user_email', { user_id: profile.id })
+         if (userEmail) {
+           await sendStatusEmail(userEmail, status, updatedApp.date, profile.full_name)
+         }
+       }
     }
 
     revalidatePath('/admin/appointments')

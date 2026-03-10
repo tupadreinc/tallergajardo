@@ -101,6 +101,7 @@ export default async function AppointmentDetailsPage({ params }: { params: Promi
                   name="status" defaultValue={appointment.status}
                   className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none transition-colors appearance-none"
                 >
+                  <option value="pending">Pendiente</option>
                   <option value="confirmed">Confirmada</option>
                   <option value="completed">Completada</option>
                   <option value="cancelled">Cancelada</option>

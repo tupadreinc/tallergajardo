@@ -8,7 +8,7 @@ type Appointment = {
   id: string
   date: string
   time: string
-  status: 'confirmed' | 'completed' | 'cancelled'
+  status: 'pending' | 'confirmed' | 'completed' | 'cancelled'
   repair_cost: number
   profiles: {
     full_name: string
@@ -18,7 +18,7 @@ type Appointment = {
 
 export function AppointmentsManager({ initialAppointments }: { initialAppointments: Appointment[] }) {
   const [appointments, setAppointments] = useState<Appointment[]>(initialAppointments)
-  const [filter, setFilter] = useState<'all' | 'confirmed' | 'completed' | 'cancelled'>('all')
+  const [filter, setFilter] = useState<'all' | 'pending' | 'confirmed' | 'completed' | 'cancelled'>('all')
   
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedAppt, setSelectedAppt] = useState<Appointment | null>(null)
@@ -78,6 +78,8 @@ export function AppointmentsManager({ initialAppointments }: { initialAppointmen
         return <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold flex w-fit items-center gap-1"><CalendarClock size={14}/> Confirmada</span>
       case 'cancelled':
         return <span className="px-3 py-1 bg-red-100 text-red-600 rounded-full text-xs font-semibold flex w-fit items-center gap-1"><X size={14}/> Cancelada</span>
+      case 'pending':
+        return <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-semibold flex w-fit items-center gap-1"><CalendarClock size={14}/> Pendiente</span>
       default:
         return <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-semibold flex w-fit items-center gap-1"><CalendarClock size={14}/> Pendiente</span>
     }
@@ -97,6 +99,12 @@ export function AppointmentsManager({ initialAppointments }: { initialAppointmen
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === 'confirmed' ? 'bg-blue-500 text-white' : 'bg-blue-50 text-blue-700 hover:bg-blue-100'}`}
         >
           Confirmadas
+        </button>
+        <button 
+          onClick={() => setFilter('pending')} 
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === 'pending' ? 'bg-amber-500 text-white' : 'bg-amber-50 text-amber-700 hover:bg-amber-100'}`}
+        >
+          Pendientes
         </button>
         <button 
           onClick={() => setFilter('completed')} 
@@ -180,6 +188,7 @@ export function AppointmentsManager({ initialAppointments }: { initialAppointmen
                   defaultValue={selectedAppt.status}
                   className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-emerald-500 w-full"
                 >
+                  <option value="pending">Pendiente (Por Confirmar)</option>
                   <option value="confirmed">Confirmada (En Taller)</option>
                   <option value="completed">Completada (Lista para Entrega)</option>
                   <option value="cancelled">Cancelada</option>

@@ -9,7 +9,7 @@
 - [ ] 6. Final Sync & Deploy.
 
 ## Current Trajectory
-**Paso activo:** Verified & Polished. Se ha implementado exitosamente el backend en Supabase, el UI/UX con Tailwind 4, y todos los módulos de administradores y clientes.
+**Paso activo:** Verified & Polished. Se han integrado notificaciones por email al cambiar estados (incluyendo nuevo estado "Pendiente") o al recetar repuestos mediante Resend. Envío condicionado a variable de entorno.
 
 ## Squad Status
 | Agent | Task | Status |

@@ -1,0 +1,94 @@
+import { Resend } from 'resend'
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+
+export async function sendStatusEmail(email: string, status: string, date: string, clientName: string) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('RESEND_API_KEY no configurado, omitiendo email.')
+    return { success: false, error: 'API key no configurada' }
+  }
+
+  const subject = `Estado actualizado: Mantención del ${date}`
+  
+  let statusText = status
+  let message = ''
+  
+  if (status === 'confirmed') {
+    statusText = 'Confirmada'
+    message = 'Tu reserva ha sido confirmada y tu vehículo está en nuestro taller siendo evaluado/reparado.'
+  } else if (status === 'completed') {
+    statusText = 'Completada'
+    message = '¡Buenas noticias! Tu mantención ha finalizado. Puedes revisar el detalle y venir a retirar tu vehículo.'
+  } else if (status === 'cancelled') {
+    statusText = 'Cancelada'
+    message = 'Tu reserva ha sido cancelada.'
+  } else if (status === 'pending') {
+    statusText = 'Pendiente'
+    message = 'Tu reserva está actualmente en estado Pendiente. Te notificaremos cualquier cambio.'
+  }
+
+  try {
+    if (!resend) throw new Error('Resend is not initialized')
+    const { data, error } = await resend.emails.send({
+      from: 'Taller Mecánico Gajardo <notificaciones@resend.dev>', // Usar un dominio verificado idealmente en Prod
+      to: [email],
+      subject,
+      html: `
+        <div style="font-family: sans-serif; padding: 20px; color: #333;">
+          <h2 style="color: #0f172a;">Hola ${clientName},</h2>
+          <p>El estado de tu mantención agendada para el <strong>${date}</strong> ha sido actualizado.</p>
+          <div style="padding: 15px; border-left: 4px solid #10b981; background: #f8fafc; margin: 20px 0;">
+            <strong>Nuevo estado:</strong> ${statusText}
+          </div>
+          <p>${message}</p>
+          <p style="margin-top: 30px; font-size: 14px; color: #64748b;">
+            Puedes ver más detalles ingresando al panel de cliente en nuestra plataforma.
+          </p>
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin-top: 30px; margin-bottom: 20px;" />
+          <p style="font-size: 12px; color: #94a3b8;">Gracias por confiar en Taller Mecánico Gajardo.</p>
+        </div>
+      `
+    })
+
+    if (error) return { success: false, error }
+    return { success: true, data }
+  } catch (error) {
+     return { success: false, error: 'Error al enviar email.' }
+  }
+}
+
+export async function sendPartRequestEmail(email: string, partName: string, date: string, clientName: string) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('RESEND_API_KEY no configurado, omitiendo email de repuesto.')
+    return { success: false, error: 'API key no configurada' }
+  }
+
+  try {
+    if (!resend) throw new Error('Resend is not initialized')
+    const { data, error } = await resend.emails.send({
+      from: 'Taller Mecánico Gajardo <notificaciones@resend.dev>',
+      to: [email],
+      subject: `Repuesto Requerido para tu mantención del ${date}`,
+      html: `
+        <div style="font-family: sans-serif; padding: 20px; color: #333;">
+          <h2 style="color: #0f172a;">Hola ${clientName},</h2>
+          <p>Durante la revisión de tu vehículo para la mantención del <strong>${date}</strong>, hemos detectado que necesitas proveer el siguiente repuesto:</p>
+          <div style="padding: 15px; border: 1px dashed #f59e0b; border-radius: 8px; background: #fffbeb; margin: 20px 0;">
+            <strong style="color: #d97706; font-size: 18px;">${partName}</strong>
+          </div>
+          <p>Te pedimos por favor gestionarlo a la brevedad para poder avanzar con tu reparación.</p>
+          <p style="margin-top: 30px; font-size: 14px; color: #64748b;">
+            Puedes revisar las instrucciones completas en tu panel de cliente.
+          </p>
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin-top: 30px; margin-bottom: 20px;" />
+          <p style="font-size: 12px; color: #94a3b8;">Atte. Equipo del Taller.</p>
+        </div>
+      `
+    })
+    
+    if (error) return { success: false, error }
+    return { success: true, data }
+  } catch (error) {
+     return { success: false, error: 'Error al enviar email.' }
+  }
+}

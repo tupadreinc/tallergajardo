@@ -5,6 +5,7 @@ import { format } from 'date-fns'
 import { toZonedTime } from 'date-fns-tz'
 import Link from 'next/link'
 import { unstable_noStore as noStore } from 'next/cache'
+import { CostBreakdown } from './CostBreakdown'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -84,18 +85,20 @@ export default async function ClientDashboardPage() {
                      <p className="text-xl font-bold font-display text-slate-900 relative z-10">
                        {format(new Date(`${app.date}T${app.time}`), "dd 'de' MMMM, yyyy")}
                      </p>
-                     <p className="text-text-secondary flex items-center gap-1.5 text-sm relative z-10">
-                        <Clock size={14}/> a las {app.time.substring(0, 5)} hrs.
-                     </p>
-                     <div className="mt-2 flex items-center justify-between relative z-10">
-                       <span className={`inline-flex items-center justify-center rounded-full px-3 py-1 border text-xs font-medium uppercase tracking-wider ${
-                         app.status === 'completed' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700' :
-                         app.status === 'confirmed' ? 'bg-blue-500/10 border-blue-500/20 text-blue-700' :
-                         app.status === 'cancelled' ? 'bg-red-500/10 border-red-500/20 text-red-600' :
-                         'bg-amber-500/10 border-amber-500/20 text-amber-700'
-                       }`}>
-                          {app.status === 'confirmed' ? 'Confirmada' : app.status === 'completed' ? 'Completada' : app.status === 'cancelled' ? 'Cancelada' : 'Pendiente'}
-                       </span>
+                     <div className="flex flex-col gap-1.5 mt-1 relative z-10">
+                       <p className="text-text-secondary flex items-center gap-1.5 text-sm mb-1">
+                          <Clock size={14}/> a las {app.time.substring(0, 5)} hrs.
+                       </p>
+                       <div className="flex items-center">
+                         <span className={`inline-flex items-center justify-center rounded-full px-3 py-1 border text-xs font-medium uppercase tracking-wider ${
+                           app.status === 'completed' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700' :
+                           app.status === 'confirmed' ? 'bg-blue-500/10 border-blue-500/20 text-blue-700' :
+                           app.status === 'cancelled' ? 'bg-red-500/10 border-red-500/20 text-red-600' :
+                           'bg-amber-500/10 border-amber-500/20 text-amber-700'
+                         }`}>
+                            {app.status === 'confirmed' ? 'Confirmada' : app.status === 'completed' ? 'Completada' : app.status === 'cancelled' ? 'Cancelada' : 'Pendiente'}
+                         </span>
+                       </div>
                      </div>
                   </div>
                 ))}
@@ -116,11 +119,10 @@ export default async function ClientDashboardPage() {
           </div>
           
           {appointments && appointments.length > 0 && appointments.some(app => app.repair_cost > 0) ? (
-            <div className="flex-1 flex items-center justify-center">
-              <span className="text-4xl font-display font-bold text-success break-all text-center">
-                {clpFormatter.format(appointments.reduce((sum, app) => sum + (app.repair_cost || 0), 0))}
-              </span>
-            </div>
+            <CostBreakdown 
+              appointments={appointments} 
+              totalFormatted={clpFormatter.format(appointments.reduce((sum, app) => sum + (app.repair_cost || 0), 0))} 
+            />
           ) : (
             <div className="empty-state flex-1 border-none bg-transparent h-full px-0">
                <p className="text-sm">Costos se calcularán luego del diagnóstico en taller.</p>
@@ -152,8 +154,8 @@ export default async function ClientDashboardPage() {
                     {part.instructions || 'Sin instrucciones adicionales asignadas.'}
                   </p>
                 </div>
-                <div className="mt-2 text-xs text-text-muted pt-3 border-t border-slate-100">
-                   Para mantención del {format(new Date(`${app.date}T${app.time}`), 'dd/MM')}
+                <div className="mt-2 text-xs text-text-muted pt-3 border-t border-slate-100 flex items-center gap-1">
+                   Para mantención del {format(new Date(`${app.date}T${app.time}`), 'dd/MM')} <Clock size={12} className="ml-1" /> a las {app.time.substring(0, 5)} hrs.
                 </div>
               </div>
             ))
