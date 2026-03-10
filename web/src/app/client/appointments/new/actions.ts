@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { sendNewAppointmentToAdmin } from '@/lib/email'
 
 export async function createClientAppointment(formData: FormData) {
   const supabase = await createClient()
@@ -86,6 +87,35 @@ export async function createClientAppointment(formData: FormData) {
     return { error: error.message }
   }
 
+  // Notificar al admin por email
+  try {
+    const { data: clientProfile } = await supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', user.id)
+      .single()
+
+    const { data: adminProfile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('role', 'admin')
+      .single()
+
+    if (adminProfile) {
+      const { data: adminEmail } = await supabase.rpc('get_user_email', { user_id: adminProfile.id })
+      if (adminEmail) {
+        await sendNewAppointmentToAdmin(
+          adminEmail,
+          clientProfile?.full_name || 'Cliente',
+          date,
+          time
+        )
+      }
+    }
+  } catch (emailError) {
+    // No bloquear el flujo si falla el email
+    console.error('Error enviando notificación al admin:', emailError)
+  }
 
   revalidatePath('/client/dashboard')
   redirect('/client/dashboard')

@@ -9,10 +9,10 @@ export async function sendStatusEmail(email: string, status: string, date: strin
   }
 
   const subject = `Estado actualizado: Mantención del ${date}`
-  
+
   let statusText = status
   let message = ''
-  
+
   if (status === 'confirmed') {
     statusText = 'Confirmada'
     message = 'Tu reserva ha sido confirmada y tu vehículo está en nuestro taller siendo evaluado/reparado.'
@@ -30,7 +30,7 @@ export async function sendStatusEmail(email: string, status: string, date: strin
   try {
     if (!resend) throw new Error('Resend is not initialized')
     const { data, error } = await resend.emails.send({
-      from: 'Taller Mecánico Gajardo <notificaciones@resend.dev>', // Usar un dominio verificado idealmente en Prod
+      from: 'Taller Mecánico Gajardo <notificaciones@resend.dev>',
       to: [email],
       subject,
       html: `
@@ -53,7 +53,7 @@ export async function sendStatusEmail(email: string, status: string, date: strin
     if (error) return { success: false, error }
     return { success: true, data }
   } catch (error) {
-     return { success: false, error: 'Error al enviar email.' }
+    return { success: false, error: 'Error al enviar email.' }
   }
 }
 
@@ -85,10 +85,44 @@ export async function sendPartRequestEmail(email: string, partName: string, date
         </div>
       `
     })
-    
+
     if (error) return { success: false, error }
     return { success: true, data }
   } catch (error) {
-     return { success: false, error: 'Error al enviar email.' }
+    return { success: false, error: 'Error al enviar email.' }
+  }
+}
+
+export async function sendNewAppointmentToAdmin(adminEmail: string, clientName: string, date: string, time: string) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('RESEND_API_KEY no configurado, omitiendo email de nueva cita al admin.')
+    return { success: false, error: 'API key no configurada' }
+  }
+
+  try {
+    if (!resend) throw new Error('Resend is not initialized')
+    const { data, error } = await resend.emails.send({
+      from: 'Taller Mecánico Gajardo <notificaciones@resend.dev>',
+      to: [adminEmail],
+      subject: `Nueva mantención agendada - ${clientName} (${date})`,
+      html: `
+        <div style="font-family: sans-serif; padding: 20px; color: #333;">
+          <h2 style="color: #0f172a;">📅 Nueva Mantención Agendada</h2>
+          <p>El cliente <strong>${clientName}</strong> ha agendado una mantención a través de la plataforma.</p>
+          <div style="padding: 15px; border-left: 4px solid #3b82f6; background: #f8fafc; margin: 20px 0;">
+            <strong>Fecha:</strong> ${date}<br/>
+            <strong>Hora:</strong> ${time}
+          </div>
+          <p>Ingresa al panel de administración para revisar los detalles y confirmar la cita.</p>
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin-top: 30px; margin-bottom: 20px;" />
+          <p style="font-size: 12px; color: #94a3b8;">Notificación automática del sistema - Taller Mecánico Gajardo.</p>
+        </div>
+      `
+    })
+
+    if (error) return { success: false, error }
+    return { success: true, data }
+  } catch (error) {
+    return { success: false, error: 'Error al enviar email de notificación al admin.' }
   }
 }
