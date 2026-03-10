@@ -131,19 +131,22 @@ export default async function AdminDashboardPage({
 
       {/* Multi-day Appointments */}
       <section>
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <Wrench className="text-accent-primary" size={20} />
-            <h2 className="font-display font-semibold text-xl">Agenda de Mantenciones</h2>
-          </div>
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <Wrench className="text-accent-primary" size={20} />
+              <h2 className="font-display font-semibold text-xl">Agenda de Mantenciones</h2>
+            </div>
             <Link
               href="/admin/appointments/new"
-              className="w-10 h-10 rounded-xl bg-accent-primary/10 text-accent-primary hover:bg-accent-primary/20 flex items-center justify-center transition-colors"
+              className="flex items-center gap-2 w-fit px-4 py-2 rounded-xl bg-accent-primary/10 text-accent-primary hover:bg-accent-primary/20 transition-colors font-medium text-sm"
               title="Agendar Manualmente"
             >
-              <Plus size={20} />
+              <Plus size={16} />
+              <span>Agregar Mantención</span>
             </Link>
+          </div>
+          <div className="flex items-center gap-3 self-start sm:self-auto">
             <DateSelector currentDate={startDateStr} />
           </div>
         </div>
