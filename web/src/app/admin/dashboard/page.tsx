@@ -84,18 +84,18 @@ export default async function AdminDashboardPage({
           <p className="page-subtitle">Resumen diario y control de operaciones del Taller.</p>
         </div>
 
-        <div className="flex flex-col items-center justify-center w-full max-w-[280px] mx-auto gap-3">
-          <div className="flex items-center justify-center gap-3 w-full">
-            <Link href="/admin/clients/new" className="cta-button shadow-sm flex-1 justify-center">
+        <div className="flex flex-col sm:flex-row items-center justify-center w-full gap-4 mt-4">
+          <div className="flex items-center justify-center gap-3">
+            <Link href="/admin/clients/new" className="cta-button shadow-sm px-8">
               <Users size={18} />
               <span>Nuevo Cliente</span>
             </Link>
-            <Link href="/admin/settings" className="bg-white border border-slate-200 shadow-sm hover:bg-slate-50 text-slate-700 rounded-xl p-2.5 transition-colors flex-shrink-0">
+            <Link href="/admin/settings" className="bg-white border border-slate-200 shadow-sm hover:bg-slate-50 text-slate-700 rounded-xl p-2.5 transition-colors flex-shrink-0" title="Configuración">
               <Settings size={20} />
             </Link>
           </div>
-          <form action={logout} className="w-full">
-            <button type="submit" className="w-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 rounded-xl p-2.5 transition-colors flex items-center justify-center gap-2 font-medium text-sm shadow-sm" title="Cerrar Sesión">
+          <form action={logout}>
+            <button type="submit" className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 rounded-xl px-8 py-2.5 transition-colors flex items-center justify-center gap-2 font-medium text-sm shadow-sm" title="Cerrar Sesión">
               <LogOut size={18} />
               <span>Cerrar sesión</span>
             </button>
