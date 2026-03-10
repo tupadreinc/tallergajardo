@@ -71,6 +71,11 @@ export default async function AdminDashboardPage({
     }
   }
 
+  const clpFormatter = new Intl.NumberFormat('es-CL', {
+    style: 'currency',
+    currency: 'CLP',
+  })
+
   return (
     <div className="flex flex-col gap-8 pb-12 w-full">
       <header className="page-header mb-6 flex flex-col items-center justify-center gap-6">
@@ -165,11 +170,18 @@ export default async function AdminDashboardPage({
                             <div className="flex flex-col min-w-0">
                               <h4 className="font-semibold text-slate-900 truncate">{app.profiles?.full_name}</h4>
                               <span className="text-sm text-text-muted mt-0.5">{app.profiles?.phone || 'Sin número'}</span>
-                              {app.repair_description && (
-                                <p className="text-sm text-slate-600 mt-1.5 line-clamp-2 leading-snug">
-                                  <span className="font-medium text-slate-700">Detalle:</span> {app.repair_description}
-                                </p>
-                              )}
+                              <div className="flex flex-col gap-1 mt-1.5">
+                                {app.repair_cost > 0 && (
+                                  <p className="text-sm font-bold text-slate-800">
+                                    Costo: {clpFormatter.format(app.repair_cost)}
+                                  </p>
+                                )}
+                                {app.repair_description && (
+                                  <p className="text-sm text-slate-600 line-clamp-2 leading-snug">
+                                    <span className="font-medium text-slate-700">Detalle:</span> {app.repair_description}
+                                  </p>
+                                )}
+                              </div>
                             </div>
                           </div>
                           

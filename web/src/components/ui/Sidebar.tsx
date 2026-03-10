@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CopyPlus, Calendar, Home, Wrench, Users, ShieldAlert, Settings, Package, Menu, X } from "lucide-react";
+import { CopyPlus, Calendar, Home, Wrench, Users, ShieldAlert, Settings, Package, Menu, X, DollarSign } from "lucide-react";
 import { useState } from "react";
 
 interface SidebarProps {
@@ -17,6 +17,7 @@ export function Sidebar({ role }: SidebarProps) {
     { name: 'Dashboard', href: '/admin/dashboard', icon: Home },
     { name: 'Miembros', href: '/admin/clients', icon: Users },
     { name: 'Repuestos', href: '/admin/parts', icon: Package },
+    { name: 'Costos', href: '/admin/costs', icon: DollarSign },
   ];
 
   const clientLinks = [
