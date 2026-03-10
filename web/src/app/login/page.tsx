@@ -25,7 +25,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center p-4 text-gray-900">
       <div className="max-w-md w-full p-8 flex flex-col items-center bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-gray-100">
         <div className="mb-8 w-full flex justify-center">
-          <img src="/taller.jpeg" alt="Mecánica Gajardo" className="h-20 md:h-16 w-auto object-contain rounded border border-white/5 shadow-sm" onError={(e) => {
+          <img src="/taller.jpeg" alt="Mecánica Gajardo" className="h-40 md:h-32 w-auto object-contain rounded border border-white/5 shadow-sm" onError={(e) => {
             (e.target as HTMLImageElement).src = 'https://placehold.co/400x150/ffffff/000000?text=Logo+Aqui'
           }} />
         </div>
