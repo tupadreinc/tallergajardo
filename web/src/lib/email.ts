@@ -126,3 +126,41 @@ export async function sendNewAppointmentToAdmin(adminEmail: string, clientName: 
     return { success: false, error: 'Error al enviar email de notificación al admin.' }
   }
 }
+
+export async function sendWelcomeEmail(clientEmail: string, clientName: string, password: string) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('RESEND_API_KEY no configurado, omitiendo email de bienvenida.')
+    return { success: false, error: 'API key no configurada' }
+  }
+
+  try {
+    if (!resend) throw new Error('Resend is not initialized')
+    const { data, error } = await resend.emails.send({
+      from: 'Taller Mecánico Gajardo <notificaciones@resend.dev>',
+      to: [clientEmail],
+      subject: '¡Bienvenido a Taller Mecánico Gajardo!',
+      html: `
+        <div style="font-family: sans-serif; padding: 20px; color: #333;">
+          <h2 style="color: #0f172a;">¡Hola ${clientName}! 👋</h2>
+          <p>Se ha creado una cuenta para ti en el sistema de <strong>Taller Mecánico Gajardo</strong>.</p>
+          <p>Ya puedes ingresar a la plataforma para agendar mantenciones y revisar el estado de tus vehículos.</p>
+          <div style="padding: 20px; border-left: 4px solid #10b981; background: #f8fafc; margin: 20px 0; border-radius: 0 8px 8px 0;">
+            <p style="margin: 0 0 8px 0;"><strong>📧 Tu correo:</strong> ${clientEmail}</p>
+            <p style="margin: 0;"><strong>🔑 Tu contraseña temporal:</strong> ${password}</p>
+          </div>
+          <p style="color: #dc2626; font-size: 14px;">⚠️ Te recomendamos cambiar tu contraseña después de tu primer ingreso.</p>
+          <p style="margin-top: 20px;">
+            Ingresa aquí: <a href="https://tallergajardo.vercel.app/login" style="color: #10b981; font-weight: bold;">tallergajardo.vercel.app/login</a>
+          </p>
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin-top: 30px; margin-bottom: 20px;" />
+          <p style="font-size: 12px; color: #94a3b8;">Gracias por confiar en Taller Mecánico Gajardo.</p>
+        </div>
+      `
+    })
+
+    if (error) return { success: false, error }
+    return { success: true, data }
+  } catch (error) {
+    return { success: false, error: 'Error al enviar email de bienvenida.' }
+  }
+}

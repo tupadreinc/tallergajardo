@@ -2,6 +2,7 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
+import { sendWelcomeEmail } from '@/lib/email'
 
 export async function createClientMember(formData: FormData) {
   try {
@@ -29,6 +30,13 @@ export async function createClientMember(formData: FormData) {
 
     if (authError || !authData.user) {
       return { error: authError?.message || "Error al registrar cliente en Supabase Auth." }
+    }
+
+    // Enviar email de bienvenida con credenciales
+    try {
+      await sendWelcomeEmail(email, fullName, password)
+    } catch (emailError) {
+      console.error('Error enviando email de bienvenida:', emailError)
     }
 
     revalidatePath('/admin/clients')

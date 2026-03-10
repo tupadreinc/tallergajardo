@@ -3,6 +3,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { sendWelcomeEmail } from '@/lib/email'
 
 export async function createClientUser(formData: FormData) {
   const email = formData.get('email') as string
@@ -31,6 +32,13 @@ export async function createClientUser(formData: FormData) {
     if (authError || !authData.user) {
       console.error("Fallo admin.createUser:", authError?.message)
       return { error: 'No se pudo crear el usuario en Auth: ' + (authError?.message || 'Error desconocido') }
+    }
+
+    // Enviar email de bienvenida con credenciales
+    try {
+      await sendWelcomeEmail(email, fullName, password)
+    } catch (emailError) {
+      console.error('Error enviando email de bienvenida:', emailError)
     }
 
     revalidatePath('/admin/dashboard')
