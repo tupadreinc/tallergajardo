@@ -21,7 +21,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4 bg-white text-gray-900">
+    <div className="flex min-h-screen items-center justify-center p-4 text-gray-900">
       <div className="max-w-md w-full p-8 flex flex-col items-center bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-gray-100 relative">
         <Link href="/login" className="absolute top-6 left-6 text-gray-400 hover:text-gray-900 transition-colors">
           <ArrowLeft size={20} />
