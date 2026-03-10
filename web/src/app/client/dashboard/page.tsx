@@ -53,13 +53,13 @@ export default async function ClientDashboardPage() {
           <h1 className="page-title uppercase text-[2.1rem] md:text-[3rem] leading-tight mt-2">HOLA, {profile?.full_name?.split(' ')[0].toUpperCase() || 'CLIENTE'}!</h1>
           <p className="page-subtitle">Revisa el estado de tus mantenciones y servicios.</p>
         </div>
-        <div className="flex flex-col items-center justify-center w-full max-w-[280px] mx-auto gap-3 mt-2">
-          <Link href="/client/appointments/new" className="cta-button shadow-sm flex-1 justify-center w-full">
+        <div className="flex flex-col sm:flex-row items-center justify-center w-full gap-4 mt-4">
+          <Link href="/client/appointments/new" className="cta-button shadow-sm px-8">
             <Calendar size={18} />
             <span>Agendar Mantención</span>
           </Link>
-          <form action={logout} className="w-full">
-            <button type="submit" className="w-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 rounded-xl p-2.5 transition-colors flex items-center justify-center gap-2 font-medium text-sm shadow-sm" title="Cerrar Sesión">
+          <form action={logout}>
+            <button type="submit" className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 rounded-xl px-8 py-2.5 transition-colors flex items-center justify-center gap-2 font-medium text-sm shadow-sm" title="Cerrar Sesión">
               <LogOut size={18} />
               <span>Cerrar sesión</span>
             </button>

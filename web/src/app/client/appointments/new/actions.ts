@@ -108,14 +108,28 @@ export async function getAvailableHours(date: string) {
     const blockSundays = globalSettings ? !globalSettings.is_working_day : false
 
     if (isSunday && blockSundays) {
-      return { error: 'El taller no atiende los domingos.', lockedTimes: [], hiddenTimes: [], timeSlots: [] }
+      return {
+        error: 'El taller no atiende los domingos.',
+        lockedTimes: Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`),
+        hiddenTimes: [],
+        timeSlots: Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`).map(t => t.substring(0, 5))
+      }
     }
 
     const maxCapacity = dateSettings?.max_capacity ?? 8
     const isWorking = dateSettings?.is_working_day ?? true
 
     if (!isWorking || maxCapacity === 0) {
-      return { error: 'El taller no recibe vehículos en la fecha seleccionada.', lockedTimes: [], hiddenTimes: [], timeSlots: [] }
+      // NOTE: Si no atiende, no retornamos un error destructivo que rompa el form.
+      // Simplemente retornamos el día como deshabilitado pero con todos los slots.
+      // Así el form del cliente se bloquea por capacidad, pero el administrador puede verlo y forzarlo
+      // gracias al bypass visual.
+      return {
+        error: 'El taller no recibe vehículos regulares en la fecha seleccionada.',
+        lockedTimes: Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`),
+        hiddenTimes: [],
+        timeSlots: Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`).map(t => t.substring(0, 5))
+      }
     }
 
     const startStr = dateSettings?.start_time ? dateSettings.start_time.substring(0, 5) : "09:00"
@@ -148,7 +162,13 @@ export async function getAvailableHours(date: string) {
 
     // Check if total day is full
     if (bookedTimes.length >= maxCapacity) {
-      return { error: 'No hay cupos disponibles. La agenda está llena para este día.', lockedTimes: [], hiddenTimes: [], timeSlots: [] }
+      // Retornar error amistoso y enviar todos los slots como locked para apagar los botones
+      return {
+        error: 'No hay cupos disponibles. La agenda está llena para este día.',
+        lockedTimes: allTimeSlots,
+        hiddenTimes: [],
+        timeSlots: allTimeSlots.map(t => t.substring(0, 5))
+      }
     }
 
     // Count bookings per slot

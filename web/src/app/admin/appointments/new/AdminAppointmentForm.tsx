@@ -135,7 +135,7 @@ export function AdminAppointmentForm({ clients }: { clients: Client[] }) {
                 )}
 
                 <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3">
-                    {timeSlots.length > 0 ? timeSlots.map((time) => {
+                    {timeSlots && timeSlots.length > 0 ? timeSlots.map((time) => {
                         const timeStr = `${time}:00`
                         if (hiddenHours.includes(timeStr) || hiddenHours.includes(time)) return null;
 
@@ -169,7 +169,7 @@ export function AdminAppointmentForm({ clients }: { clients: Client[] }) {
                             </label>
                         )
                     }) : (
-                        <div className="col-span-full text-slate-500 text-sm text-center py-4">Selecciona una fecha válida</div>
+                        <div className="col-span-full text-slate-500 text-sm text-center py-4">Selecciona una fecha válida para ver horarios</div>
                     )}
                 </div>
             </div>
