@@ -12,7 +12,6 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 const TIMEZONE = 'America/Santiago'
-const DAYS_TO_SHOW = 3
 
 export default async function AdminDashboardPage({
   searchParams,
@@ -25,7 +24,6 @@ export default async function AdminDashboardPage({
   const resolvedSearchParams = await searchParams
   const todayZoned = toZonedTime(new Date(), TIMEZONE)
   const startDateStr = resolvedSearchParams.date || format(todayZoned, 'yyyy-MM-dd')
-  const endDateStr = format(addDays(new Date(`${startDateStr}T12:00:00`), DAYS_TO_SHOW - 1), 'yyyy-MM-dd')
 
   // Fetch appointments for the 3-day range
   const { data: allAppointments } = await supabase
@@ -35,18 +33,11 @@ export default async function AdminDashboardPage({
       profiles:client_id (full_name, phone)
     `)
     .gte('date', startDateStr)
-    .lte('date', endDateStr)
     .order('date', { ascending: true })
     .order('time', { ascending: true })
 
   // Group appointments by date
   const groupedByDate: Record<string, typeof allAppointments> = {}
-  
-  // Pre-fill keys for all 3 days so empty days still show
-  for (let i = 0; i < DAYS_TO_SHOW; i++) {
-    const dayStr = format(addDays(new Date(`${startDateStr}T12:00:00`), i), 'yyyy-MM-dd')
-    groupedByDate[dayStr] = []
-  }
 
   allAppointments?.forEach((app) => {
     if (!groupedByDate[app.date]) groupedByDate[app.date] = []
@@ -113,7 +104,7 @@ export default async function AdminDashboardPage({
           <div className="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center text-accent-primary mb-2">
             <Calendar size={20} />
           </div>
-          <span className="text-text-muted text-sm font-medium uppercase tracking-wide">Citas ({DAYS_TO_SHOW} días)</span>
+          <span className="text-text-muted text-sm font-medium uppercase tracking-wide">Citas Registradas</span>
           <span className="text-3xl font-display font-bold text-slate-900 mt-1">{totalAppointments}</span>
         </div>
 

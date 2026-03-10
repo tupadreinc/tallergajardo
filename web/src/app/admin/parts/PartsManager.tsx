@@ -49,6 +49,8 @@ export function PartsManager({ initialParts, activeAppointments }: { initialPart
 
     if (result.error) {
       alert(`Error: ${result.error}`)
+    } else {
+      setParts(parts.filter(p => p.id !== id))
     }
   }
 
