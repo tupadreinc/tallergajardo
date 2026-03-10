@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { Calendar, Users, Wrench, ChevronRight, Settings, LogOut, Clock } from 'lucide-react'
+import { Calendar, Users, Wrench, ChevronRight, Settings, LogOut, Clock, Plus } from 'lucide-react'
 import { logout } from '@/app/login/actions'
 import { format, addDays } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -142,7 +142,7 @@ export default async function AdminDashboardPage({
               className="w-10 h-10 rounded-xl bg-accent-primary/10 text-accent-primary hover:bg-accent-primary/20 flex items-center justify-center transition-colors"
               title="Agendar Manualmente"
             >
-              <Users size={18} />
+              <Plus size={20} />
             </Link>
             <DateSelector currentDate={startDateStr} />
           </div>
