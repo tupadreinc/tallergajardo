@@ -5,7 +5,7 @@ import { Users } from 'lucide-react'
 
 export default async function ClientsPage() {
   const supabase = await createClient()
-  
+
   // 1. Obtener la data pública/básica de los perfiles
   const { data: profiles } = await supabase
     .from('profiles')
@@ -20,7 +20,7 @@ export default async function ClientsPage() {
   try {
     const adminClient = createAdminClient()
     const { data: { users } } = await adminClient.auth.admin.listUsers()
-    
+
     // Merge de email con el profile correspondiente
     const emailMap = new Map(users.map(u => [u.id, u.email]))
     clients = clients.map((c: any) => ({
@@ -36,17 +36,14 @@ export default async function ClientsPage() {
     <div className="flex flex-col gap-8 pb-12 w-full">
       <header className="page-header flex items-center justify-between">
         <div>
-          <div className="mb-4 flex justify-center md:justify-start md:hidden">
-            <img src="/taller.jpeg" alt="Mecánica Gajardo" className="h-16 w-auto object-contain rounded" />
-          </div>
           <h1 className="page-title flex items-center gap-3">
-             <Users className="text-emerald-500" size={28} />
-             Gestión de Miembros
+            <Users className="text-emerald-500" size={28} />
+            Gestión de Miembros
           </h1>
           <p className="page-subtitle">Directorio completo de clientes registrados en el taller.</p>
         </div>
       </header>
-      
+
       <ClientManager initialClients={clients} missingAdminKey={missingAdminKey} />
     </div>
   )
