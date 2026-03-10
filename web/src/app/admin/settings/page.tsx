@@ -3,7 +3,7 @@ import { ArrowLeft, CalendarDays, Settings, Save } from 'lucide-react'
 import Link from 'next/link'
 import { format } from 'date-fns'
 import { toZonedTime } from 'date-fns-tz'
-import { saveDailySettings } from './actions'
+import { saveDailySettings, saveGlobalSettings } from './actions'
 
 const TIMEZONE = 'America/Santiago'
 
@@ -22,6 +22,15 @@ export default async function AdminSettingsPage(props: { searchParams: Promise<{
     .select('*')
     .eq('date', selectedDate)
     .single()
+
+  // Fetch global settings (stored in 2000-01-01)
+  const { data: globalSettings } = await supabase
+    .from('daily_settings')
+    .select('is_working_day')
+    .eq('date', '2000-01-01')
+    .single()
+
+  const blockSundays = globalSettings ? !globalSettings.is_working_day : false
 
   return (
     <div className="flex flex-col gap-8 pb-12 w-full max-w-3xl mx-auto mt-4">
@@ -129,7 +138,37 @@ export default async function AdminSettingsPage(props: { searchParams: Promise<{
           <div className="mt-4 flex justify-end">
             <button type="submit" className="cta-button py-3 px-8 rounded-xl bg-success hover:bg-success/80 border-none shadow-lg shadow-success/20">
               <Save size={18} />
-              <span>Guardar Configuración</span>
+              <span>Guardar Configuración Especial</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div className="glass-panel p-6 sm:p-8 mt-2">
+        <form action={async (fd) => {
+          'use server'
+          await saveGlobalSettings(fd)
+        }} className="flex flex-col gap-6">
+          <div className="flex items-center gap-2 pb-4 border-b border-white/10">
+            <Settings className="text-warning" size={20} />
+            <h2 className="font-display font-semibold text-lg">Configuración Global</h2>
+          </div>
+
+          <div className="flex items-center gap-3 bg-white/5 p-4 rounded-xl border border-white/10 w-fit">
+            <label className="text-sm font-semibold text-text-secondary cursor-pointer flex items-center gap-3">
+              <input
+                type="checkbox" name="block_sundays"
+                defaultChecked={blockSundays}
+                className="w-5 h-5 accent-accent-primary"
+              />
+              Bloquear agendamiento todos los Domingos
+            </label>
+          </div>
+
+          <div className="mt-4 flex justify-end">
+            <button type="submit" className="cta-button py-3 px-8 rounded-xl bg-success hover:bg-success/80 border-none shadow-lg shadow-success/20">
+              <Save size={18} />
+              <span>Guardar Global</span>
             </button>
           </div>
         </form>

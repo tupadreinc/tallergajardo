@@ -16,12 +16,20 @@ export async function createAdminAppointment(formData: FormData) {
     // Count existing appointments for this date
     const { data: settings } = await supabase
         .from('daily_settings')
-        .select('max_capacity, is_working_day')
-        .eq('date', date)
-        .single()
+        .select('max_capacity, is_working_day, start_time, end_time, date')
+        .in('date', [date, '2000-01-01'])
 
-    const maxCapacity = settings?.max_capacity ?? 8
-    const isWorking = settings?.is_working_day ?? true
+    const dateSettings = settings?.find(s => s.date !== '2000-01-01')
+    const globalSettings = settings?.find(s => s.date === '2000-01-01')
+
+    const isSunday = new Date(date).getUTCDay() === 0
+    const blockSundays = globalSettings ? !globalSettings.is_working_day : false
+    if (isSunday && blockSundays) {
+        return { error: 'El taller no atiende este domingo (bloqueado globalmente).' }
+    }
+
+    const maxCapacity = dateSettings?.max_capacity ?? 8
+    const isWorking = dateSettings?.is_working_day ?? true
 
     if (!isWorking || maxCapacity === 0) {
         return { error: 'El taller tiene configurado este día como no laboral, pero como administrador puedes intentar forzarlo si actualizas la configuración primero.' }
@@ -31,9 +39,32 @@ export async function createAdminAppointment(formData: FormData) {
         .from('appointments')
         .select('*', { count: 'exact', head: true })
         .eq('date', date)
+        .in('status', ['pending', 'completed', 'confirmed'])
 
     if (bookedCount !== null && bookedCount >= maxCapacity) {
-        return { error: 'No hay cupos disponibles según la capacidad asignada a este día.' }
+        return { error: 'No hay cupos disponibles según la capacidad total asignada a este día.' }
+    }
+
+    const startStr = dateSettings?.start_time ? dateSettings.start_time.substring(0, 5) : "09:00"
+    const endStr = dateSettings?.end_time ? dateSettings.end_time.substring(0, 5) : "18:00"
+
+    const startHour = parseInt(startStr.split(':')[0], 10)
+    let endHour = parseInt(endStr.split(':')[0], 10)
+    if (endStr.endsWith(':30') || endStr.endsWith(':59') || parseInt(endStr.split(':')[1], 10) > 0) {
+        endHour += 1;
+    }
+    const totalHours = Math.max(1, endHour - startHour)
+    const capacityPerHour = Math.ceil(maxCapacity / totalHours)
+
+    const { count: slotBookedCount } = await supabase
+        .from('appointments')
+        .select('*', { count: 'exact', head: true })
+        .eq('date', date)
+        .eq('time', time)
+        .in('status', ['pending', 'completed', 'confirmed'])
+
+    if (slotBookedCount !== null && slotBookedCount >= capacityPerHour) {
+        return { error: 'Este cupo horario ya alcanzó la capacidad máxima.' }
     }
 
     // Insert appointment

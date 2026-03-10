@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { CalendarDays, Clock, CheckCircle, AlertCircle, Loader2, User } from 'lucide-react'
 import { createAdminAppointment } from './actions'
+import { getAvailableHours } from '@/app/client/appointments/new/actions'
 
 type Client = {
     id: string
@@ -10,15 +11,51 @@ type Client = {
     phone: string | null
 }
 
-const timeSlots = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"]
-
 export function AdminAppointmentForm({ clients }: { clients: Client[] }) {
     const [selectedClient, setSelectedClient] = useState<string>('')
     const [selectedDate, setSelectedDate] = useState<string>('')
     const [selectedTime, setSelectedTime] = useState<string>('')
+    const [unavailableHours, setUnavailableHours] = useState<string[]>([])
+    const [hiddenHours, setHiddenHours] = useState<string[]>([])
+    const [timeSlots, setTimeSlots] = useState<string[]>([])
+    const [isLoadingHours, setIsLoadingHours] = useState(false)
 
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [errorMsg, setErrorMsg] = useState<string | null>(null)
+
+    // Fetch availability based on selected date
+    import('react').then(React => {
+        React.useEffect(() => {
+            if (!selectedDate) {
+                setUnavailableHours([])
+                return
+            }
+
+            async function fetchHours() {
+                setIsLoadingHours(true)
+                setSelectedTime('')
+
+                const { lockedTimes, hiddenTimes, timeSlots: generatedSlots, error } = await getAvailableHours(selectedDate)
+
+                if (error) {
+                    setErrorMsg(error)
+                    // We don't block all if error, admin might want to bypass, but let's hide non-valid slots
+                    setUnavailableHours(generatedSlots || [])
+                    setHiddenHours([])
+                    setTimeSlots(generatedSlots || [])
+                } else {
+                    setErrorMsg(null)
+                    setUnavailableHours(lockedTimes || [])
+                    setHiddenHours(hiddenTimes || [])
+                    setTimeSlots(generatedSlots || [])
+                }
+
+                setIsLoadingHours(false)
+            }
+
+            fetchHours()
+        }, [selectedDate])
+    })
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -90,27 +127,50 @@ export function AdminAppointmentForm({ clients }: { clients: Client[] }) {
                         <Clock className="text-warning" size={20} />
                         <h2 className="font-display font-semibold text-lg text-slate-900">3. Hora de Ingreso (Bypass Admin)</h2>
                     </div>
+                    {isLoadingHours && <Loader2 size={16} className="text-emerald-500 animate-spin" />}
                 </div>
 
+                {!selectedDate && (
+                    <p className="text-sm text-amber-600">Por favor, selecciona primero un día calendario arriba.</p>
+                )}
+
                 <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3">
-                    {timeSlots.map((time) => {
+                    {timeSlots.length > 0 ? timeSlots.map((time) => {
+                        const timeStr = `${time}:00`
+                        if (hiddenHours.includes(timeStr) || hiddenHours.includes(time)) return null;
+
+                        const isLocked = unavailableHours.includes(timeStr) || unavailableHours.includes(time)
+
                         return (
-                            <label key={time} className="relative cursor-pointer">
+                            <label key={time} className={`relative ${isLocked ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
                                 <input
                                     type="radio"
                                     name="time"
                                     value={`${time}:00`}
                                     className="peer sr-only"
                                     required
+                                    disabled={isLocked}
                                     checked={selectedTime === `${time}:00`}
                                     onChange={(e) => setSelectedTime(e.target.value)}
                                 />
-                                <div className="rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 peer-checked:border-accent-primary peer-checked:bg-emerald-500/10 peer-checked:text-accent-primary py-3 text-center text-sm font-medium transition-all">
+                                <div className={`
+                                  rounded-xl border py-3 text-center text-sm font-medium transition-all
+                                  ${isLocked
+                                        ? 'border-red-100 bg-red-50 text-red-300'
+                                        : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 peer-checked:border-accent-primary peer-checked:bg-emerald-500/10 peer-checked:text-accent-primary'}
+                                `}>
                                     {time}
                                 </div>
+                                {isLocked && (
+                                    <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-100 rounded-full flex items-center justify-center border border-white">
+                                        <span className="text-[10px] text-red-500 font-bold">×</span>
+                                    </div>
+                                )}
                             </label>
                         )
-                    })}
+                    }) : (
+                        <div className="col-span-full text-slate-500 text-sm text-center py-4">Selecciona una fecha válida</div>
+                    )}
                 </div>
             </div>
 
@@ -124,6 +184,6 @@ export function AdminAppointmentForm({ clients }: { clients: Client[] }) {
                     <span>{isSubmitting ? 'Guardando...' : 'Agendar Mantención'}</span>
                 </button>
             </div>
-        </form>
+        </form >
     )
 }

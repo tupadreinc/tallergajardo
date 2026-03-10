@@ -33,3 +33,25 @@ export async function saveDailySettings(formData: FormData) {
   revalidatePath('/admin/settings')
   return { success: true }
 }
+
+export async function saveGlobalSettings(formData: FormData) {
+  const supabase = await createClient()
+
+  const block_sundays = formData.get('block_sundays') === 'on'
+
+  // Using a dummy date to store global configuration in daily_settings
+  const globalSettingDate = '2000-01-01'
+
+  const { error } = await supabase
+    .from('daily_settings')
+    .upsert({
+      date: globalSettingDate,
+      is_working_day: !block_sundays, // if blocked, is_working_day is false
+      max_capacity: 0, // Not used but required
+    })
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/admin/settings')
+  return { success: true }
+}

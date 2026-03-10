@@ -9,14 +9,13 @@ type Props = {
   maxDateStr: string
 }
 
-const timeSlots = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"]
-
 export function InteractiveAppointmentForm({ todayStr, maxDateStr }: Props) {
   const [selectedDate, setSelectedDate] = useState<string>('')
   const [selectedTime, setSelectedTime] = useState<string>('')
 
   const [unavailableHours, setUnavailableHours] = useState<string[]>([])
   const [hiddenHours, setHiddenHours] = useState<string[]>([])
+  const [timeSlots, setTimeSlots] = useState<string[]>([])
   const [isLoadingHours, setIsLoadingHours] = useState(false)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -33,16 +32,18 @@ export function InteractiveAppointmentForm({ todayStr, maxDateStr }: Props) {
       setIsLoadingHours(true)
       setSelectedTime('') // Reset time when date changes
 
-      const { lockedTimes, hiddenTimes, error } = await getAvailableHours(selectedDate)
+      const { lockedTimes, hiddenTimes, timeSlots: generatedSlots, error } = await getAvailableHours(selectedDate)
 
       if (error) {
         setErrorMsg(error)
-        setUnavailableHours(timeSlots) // Bloquea todo si hay error (ej. cupo maximo o feriado)
+        setUnavailableHours(generatedSlots || []) // Bloquea todo si hay error (ej. cupo maximo o feriado)
         setHiddenHours([])
+        setTimeSlots(generatedSlots || [])
       } else {
         setErrorMsg(null)
         setUnavailableHours(lockedTimes || [])
         setHiddenHours(hiddenTimes || [])
+        setTimeSlots(generatedSlots || [])
       }
 
       setIsLoadingHours(false)
@@ -112,7 +113,7 @@ export function InteractiveAppointmentForm({ todayStr, maxDateStr }: Props) {
         )}
 
         <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3">
-          {timeSlots.map((time) => {
+          {timeSlots.length > 0 ? timeSlots.map((time) => {
             const timeStr = `${time}:00`
             if (hiddenHours.includes(timeStr) || hiddenHours.includes(time)) return null;
 
@@ -145,7 +146,9 @@ export function InteractiveAppointmentForm({ todayStr, maxDateStr }: Props) {
                 )}
               </label>
             )
-          })}
+          }) : (
+            <div className="col-span-full text-slate-500 text-sm text-center py-4">Selecciona una fecha válida</div>
+          )}
         </div>
       </div>
 
