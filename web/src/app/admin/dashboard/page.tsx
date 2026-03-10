@@ -90,9 +90,6 @@ export default async function AdminDashboardPage({
               <Users size={18} />
               <span>Nuevo Cliente</span>
             </Link>
-            <Link href="/admin/settings" className="bg-white border border-slate-200 shadow-sm hover:bg-slate-50 text-slate-700 rounded-xl p-2.5 transition-colors flex-shrink-0" title="Configuración">
-              <Settings size={20} />
-            </Link>
           </div>
           <form action={logout}>
             <button type="submit" className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 rounded-xl px-8 py-2.5 transition-colors flex items-center justify-center gap-2 font-medium text-sm shadow-sm" title="Cerrar Sesión">
