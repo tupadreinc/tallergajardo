@@ -5,7 +5,12 @@ import { cookies } from 'next/headers'
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/client/dashboard'
+  const rawNext = searchParams.get('next') ?? '/client/dashboard'
+  
+  // Sanitizar parámetro: la redirección debe ser relativa internamente y no un host externo
+  const safeNext = (rawNext.startsWith('/') && !rawNext.startsWith('//')) 
+    ? rawNext 
+    : '/client/dashboard'
 
   if (code) {
     const cookieStore = await cookies()
@@ -34,7 +39,7 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`)
+      return NextResponse.redirect(`${origin}${safeNext}`)
     }
   }
 

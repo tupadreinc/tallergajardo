@@ -15,6 +15,21 @@ export async function updateAppointmentStatus(formData: FormData) {
     }
 
     const supabase = await createClient()
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      return { error: 'No autorizado. Debes iniciar sesión.' }
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.role !== 'admin') {
+      return { error: 'No autorizado. Permisos insuficientes.' }
+    }
     
     const { error } = await supabase
       .from('appointments')
@@ -61,6 +76,21 @@ export async function deleteAppointment(formData: FormData) {
 
     const supabase = await createClient()
     
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      return { error: 'No autorizado. Debes iniciar sesión.' }
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.role !== 'admin') {
+      return { error: 'No autorizado. Permisos insuficientes.' }
+    }
+
     const { error } = await supabase
       .from('appointments')
       .delete()

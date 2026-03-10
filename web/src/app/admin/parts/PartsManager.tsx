@@ -142,7 +142,7 @@ export function PartsManager({ initialParts, activeAppointments }: { initialPart
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-semibold text-slate-700 ml-1">Ligar a Cita Abierta</label>
+                <label className="text-sm font-semibold text-slate-700 ml-1">Seleccionar cliente</label>
                 <select 
                   name="appointmentId" 
                   required
@@ -155,7 +155,7 @@ export function PartsManager({ initialParts, activeAppointments }: { initialPart
                     </option>
                   ))}
                 </select>
-                {activeAppointments.length === 0 && <span className="text-amber-600 text-xs ml-1">No hay citas activas disponibles actualmente.</span>}
+                {activeAppointments.length === 0 && <span className="text-amber-600 text-xs ml-1">No hay clientes disponibles actualmente.</span>}
               </div>
 
               <div className="flex flex-col gap-1.5">

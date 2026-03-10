@@ -38,7 +38,7 @@ export default async function PartsPage() {
       date,
       profiles (full_name)
     `)
-    .eq('status', 'pending')
+    .neq('status', 'completed')
     .order('date', { ascending: true })
 
   const activeAppointments = (rawAppointments || []).map((app: any) => ({
