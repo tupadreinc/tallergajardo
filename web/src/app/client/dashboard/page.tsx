@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Calendar, Clock, DollarSign, Wrench, Package, LogOut } from 'lucide-react'
 import { logout } from '@/app/login/actions'
 import { format } from 'date-fns'
+import { es } from 'date-fns/locale'
 import { toZonedTime } from 'date-fns-tz'
 import Link from 'next/link'
 import { unstable_noStore as noStore } from 'next/cache'
@@ -80,17 +81,17 @@ export default async function ClientDashboardPage() {
             {appointments && appointments.length > 0 ? (
               <div className="mt-4 flex flex-col gap-3 max-h-[300px] overflow-y-auto pr-2">
                 {appointments.map((app) => (
-                  <div key={app.id} className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative group overflow-hidden">
+                  <div key={app.id} className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex flex-row items-center justify-between gap-3 relative group overflow-hidden">
                      <div className="absolute top-0 right-0 w-24 h-24 bg-accent-primary/5 rounded-full -mr-10 -mt-10 transition-transform group-hover:scale-150 duration-500"></div>
-                     <div className="flex flex-col relative z-10">
-                       <p className="text-lg md:text-xl font-bold font-display text-slate-900">
-                         {format(new Date(`${app.date}T${app.time}`), "dd 'de' MMMM, yyyy")}
+                     <div className="flex flex-col relative z-10 flex-shrink min-w-0">
+                       <p className="text-base font-bold font-display text-slate-900 truncate">
+                         {format(new Date(`${app.date}T${app.time}`), "dd 'de' MMMM, yyyy", { locale: es })}
                        </p>
                        <p className="text-text-secondary flex items-center gap-1.5 text-sm mt-0.5">
                           <Clock size={14}/> a las {app.time.substring(0, 5)} hrs.
                        </p>
                      </div>
-                     <div className="relative z-10 self-start sm:self-auto">
+                     <div className="relative z-10 flex-shrink-0">
                        <span className={`inline-flex items-center justify-center rounded-full px-3 py-1 border text-[10px] md:text-xs font-medium uppercase tracking-wider whitespace-nowrap ${
                          app.status === 'completed' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700' :
                          app.status === 'confirmed' ? 'bg-blue-500/10 border-blue-500/20 text-blue-700' :

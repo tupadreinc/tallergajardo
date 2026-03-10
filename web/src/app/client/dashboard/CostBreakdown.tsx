@@ -57,9 +57,7 @@ export function CostBreakdown({
                     {formatter.format(app.repair_cost)}
                   </span>
                 </div>
-                {app.repair_description && (
-                  <p className="text-[11px] text-slate-400 leading-snug">Detalle: {app.repair_description}</p>
-                )}
+                <p className="text-[11px] text-slate-400 leading-snug">Detalle: {app.repair_description || 'No especificado'}</p>
               </div>
             ))}
           </div>
