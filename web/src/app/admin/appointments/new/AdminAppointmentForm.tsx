@@ -39,16 +39,14 @@ export function AdminAppointmentForm({ clients }: { clients: Client[] }) {
 
                 if (error) {
                     setErrorMsg(error)
-                    // We don't block all if error, admin might want to bypass, but let's hide non-valid slots
-                    setUnavailableHours(generatedSlots || [])
-                    setHiddenHours([])
-                    setTimeSlots(generatedSlots || [])
                 } else {
                     setErrorMsg(null)
-                    setUnavailableHours(lockedTimes || [])
-                    setHiddenHours(hiddenTimes || [])
-                    setTimeSlots(generatedSlots || [])
                 }
+
+                // Regardless of the error (which blocks normal users), the admin needs these UI arrays to function via Bypass
+                setUnavailableHours(lockedTimes || [])
+                setHiddenHours(hiddenTimes || [])
+                setTimeSlots(generatedSlots || [])
 
                 setIsLoadingHours(false)
             }
