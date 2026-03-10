@@ -87,13 +87,13 @@ export default async function AdminDashboardPage({
           <p className="page-subtitle">Resumen diario y control de operaciones del Taller.</p>
         </div>
 
-        <div className="flex flex-col items-center gap-3">
-          <div className="flex items-center gap-3">
-            <Link href="/admin/clients/new" className="cta-button shadow-sm">
+        <div className="flex flex-col items-center justify-center w-full max-w-[280px] mx-auto gap-3">
+          <div className="flex items-center justify-center gap-3 w-full">
+            <Link href="/admin/clients/new" className="cta-button shadow-sm flex-1 justify-center">
               <Users size={18} />
               <span>Nuevo Cliente</span>
             </Link>
-            <Link href="/admin/settings" className="bg-white border border-slate-200 shadow-sm hover:bg-slate-50 text-slate-700 rounded-xl p-2.5 transition-colors">
+            <Link href="/admin/settings" className="bg-white border border-slate-200 shadow-sm hover:bg-slate-50 text-slate-700 rounded-xl p-2.5 transition-colors flex-shrink-0">
               <Settings size={20} />
             </Link>
           </div>
@@ -136,7 +136,16 @@ export default async function AdminDashboardPage({
             <Wrench className="text-accent-primary" size={20} />
             <h2 className="font-display font-semibold text-xl">Agenda de Mantenciones</h2>
           </div>
-          <DateSelector currentDate={startDateStr} />
+          <div className="flex items-center gap-3">
+            <Link
+              href="/admin/appointments/new"
+              className="w-10 h-10 rounded-xl bg-accent-primary/10 text-accent-primary hover:bg-accent-primary/20 flex items-center justify-center transition-colors"
+              title="Agendar Manualmente"
+            >
+              <Users size={18} />
+            </Link>
+            <DateSelector currentDate={startDateStr} />
+          </div>
         </div>
 
         <div className="flex flex-col gap-6">
@@ -217,7 +226,7 @@ export default async function AdminDashboardPage({
             )
           })}
         </div>
-      </section>
-    </div>
+      </section >
+    </div >
   )
 }

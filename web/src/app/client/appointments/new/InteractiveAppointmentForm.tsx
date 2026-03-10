@@ -16,6 +16,7 @@ export function InteractiveAppointmentForm({ todayStr, maxDateStr }: Props) {
   const [selectedTime, setSelectedTime] = useState<string>('')
 
   const [unavailableHours, setUnavailableHours] = useState<string[]>([])
+  const [hiddenHours, setHiddenHours] = useState<string[]>([])
   const [isLoadingHours, setIsLoadingHours] = useState(false)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -32,14 +33,16 @@ export function InteractiveAppointmentForm({ todayStr, maxDateStr }: Props) {
       setIsLoadingHours(true)
       setSelectedTime('') // Reset time when date changes
 
-      const { lockedTimes, error } = await getAvailableHours(selectedDate)
+      const { lockedTimes, hiddenTimes, error } = await getAvailableHours(selectedDate)
 
       if (error) {
         setErrorMsg(error)
         setUnavailableHours(timeSlots) // Bloquea todo si hay error (ej. cupo maximo o feriado)
+        setHiddenHours([])
       } else {
         setErrorMsg(null)
         setUnavailableHours(lockedTimes || [])
+        setHiddenHours(hiddenTimes || [])
       }
 
       setIsLoadingHours(false)
@@ -110,7 +113,10 @@ export function InteractiveAppointmentForm({ todayStr, maxDateStr }: Props) {
 
         <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3">
           {timeSlots.map((time) => {
-            const isLocked = unavailableHours.includes(`${time}:00`) || unavailableHours.includes(time)
+            const timeStr = `${time}:00`
+            if (hiddenHours.includes(timeStr) || hiddenHours.includes(time)) return null;
+
+            const isLocked = unavailableHours.includes(timeStr) || unavailableHours.includes(time)
 
             return (
               <label key={time} className={`relative ${isLocked ? 'cursor-not-allowed' : 'cursor-pointer'}`}>

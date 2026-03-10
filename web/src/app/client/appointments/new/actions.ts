@@ -77,24 +77,25 @@ export async function getAvailableHours(date: string) {
       return { error: 'El taller no recibe vehículos en la fecha seleccionada.', lockedTimes: [] }
     }
 
-    // Fetch specifically the occupied times for that date (regardless of user, but only pending/completed)
+    // Fetch specifically the occupied times for that date (regardless of user, but only pending/completed/confirmed)
     const { data: bookedTimes, error } = await supabase
       .from('appointments')
       .select('time')
       .eq('date', date)
-      .in('status', ['pending', 'completed']) // Cancelled times are free again
+      .in('status', ['pending', 'completed', 'confirmed']) // Cancelled times are free again
 
     if (error) {
       console.error("Error validando horas", error)
-      return { error: 'Error recargando disponibilidad.', lockedTimes: [] }
+      return { error: 'Error recargando disponibilidad.', lockedTimes: [], hiddenTimes: [] }
     }
 
     // Check if total day is full (e.g > 8 cars)
     if (bookedTimes.length >= maxCapacity) {
-      return { error: 'No hay cupos disponibles. La agenda está llena para este día.', lockedTimes: [] }
+      return { error: 'No hay cupos disponibles. La agenda está llena para este día.', lockedTimes: [], hiddenTimes: [] }
     }
 
     const lockedTimes = bookedTimes.map(row => row.time.substring(0, 5) + ':00') // normalize just in case
+    const hiddenTimes: string[] = []
 
     // Incorporate start, end, and lunch times
     const allTimeSlots = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"]
@@ -106,18 +107,18 @@ export async function getAvailableHours(date: string) {
     allTimeSlots.forEach(slot => {
       // Validar si el slot está antes del inicio o en/después del fin
       if (slot < startStr || slot >= endStr) {
-        lockedTimes.push(`${slot}:00`)
+        hiddenTimes.push(`${slot}:00`)
       }
 
       // Validar si el slot cae en horario de colación
       if (lunchStartStr && lunchEndStr) {
         if (slot >= lunchStartStr && slot < lunchEndStr) {
-          lockedTimes.push(`${slot}:00`)
+          hiddenTimes.push(`${slot}:00`)
         }
       }
     })
 
-    return { lockedTimes }
+    return { lockedTimes, hiddenTimes }
 
   } catch (error: any) {
     return { error: error.message || 'Error inesperado consultando disponibilidad.', lockedTimes: [] }
