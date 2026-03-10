@@ -122,22 +122,14 @@ export default async function AppointmentDetailsPage({ params }: { params: Promi
       </div>
 
       <div className="flex flex-col gap-6 max-w-2xl mx-auto w-full mt-2">
-        <div className="glass-panel p-6 border-red-200 bg-red-50/50">
-          <h2 className="font-display font-semibold text-lg flex items-center gap-2 mb-2 text-red-600">
-            <Trash2 className="text-red-500" size={20} /> Zona de Peligro
-          </h2>
-          <p className="text-sm text-slate-600 mb-4">
-            Esta acción eliminará el registro de la reserva de forma permanente.
-          </p>
-          <form action={async () => {
-            'use server'
-            await deleteAppointment(id)
-          }}>
-            <button className="w-full flex justify-center items-center gap-2 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition-colors" type="submit">
-              <Trash2 size={18} /> Eliminar Reserva
-            </button>
-          </form>
-        </div>
+        <form action={async () => {
+          'use server'
+          await deleteAppointment(id)
+        }}>
+          <button className="cta-button w-full justify-center py-3 mt-2 !bg-red-600 hover:!bg-red-700" style={{ boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)' }} type="submit">
+            Eliminar Reserva
+          </button>
+        </form>
       </div>
     </div>
   )
