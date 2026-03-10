@@ -16,7 +16,6 @@ export function Sidebar({ role }: SidebarProps) {
   const adminLinks = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: Home },
     { name: 'Miembros', href: '/admin/clients', icon: Users },
-    { name: 'Agendados', href: '/admin/appointments', icon: Calendar },
     { name: 'Repuestos', href: '/admin/parts', icon: Package },
   ];
 
