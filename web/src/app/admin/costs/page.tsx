@@ -35,7 +35,7 @@ export default async function CostsPage() {
     // Solo sumamos lo que está "pagado" si el sistema de estados está en uso? No, histórico total = todo para contabilidad, pero podemos separarlo si se desea. Aquí sumamos todo al total.
     totalIncome += cost
 
-    if (app.payment_status === 'paid') {
+    if (app.payment_status === 'pagado') {
       totalPaid += cost;
     } else {
       totalPending += cost;
