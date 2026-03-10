@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 
 export function CostBreakdown({
   appointments,
@@ -33,9 +34,10 @@ export function CostBreakdown({
     <div className="relative flex-1 w-full h-full flex flex-col items-center justify-center" ref={menuRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="text-4xl hover:scale-105 transition-transform cursor-pointer font-display font-bold text-success break-all text-center hover:opacity-80"
+        className="text-4xl hover:scale-105 transition-transform cursor-pointer font-display font-bold text-success break-all text-center hover:opacity-80 flex items-center justify-center gap-2"
       >
         {totalFormatted}
+        {isOpen ? <ChevronUp size={24} className="text-success/70" /> : <ChevronDown size={24} className="text-success/70" />}
       </button>
       
       {isOpen && (
@@ -46,13 +48,18 @@ export function CostBreakdown({
           </h4>
           <div className="flex flex-col gap-2 max-h-[150px] overflow-y-auto pr-1">
             {appointments.filter(app => (app.repair_cost || 0) > 0).map(app => (
-              <div key={app.id} className="flex justify-between items-center text-sm">
-                <span className="text-slate-500 capitalize">
-                  {format(new Date(`${app.date}T${app.time}`), 'dd MMM yyyy', { locale: es })}
-                </span>
-                <span className="font-semibold text-slate-800">
-                  {formatter.format(app.repair_cost)}
-                </span>
+              <div key={app.id} className="flex flex-col gap-1 border-b border-slate-50 last:border-0 pb-2.5">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-slate-500 capitalize">
+                    {format(new Date(`${app.date}T${app.time}`), 'dd MMM yyyy', { locale: es })}
+                  </span>
+                  <span className="font-semibold text-slate-800">
+                    {formatter.format(app.repair_cost)}
+                  </span>
+                </div>
+                {app.repair_description && (
+                  <p className="text-[11px] text-slate-400 leading-snug">Detalle: {app.repair_description}</p>
+                )}
               </div>
             ))}
           </div>

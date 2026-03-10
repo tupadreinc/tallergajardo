@@ -9,12 +9,17 @@ export async function updateRepairCost(appointmentId: string, formData: FormData
   const supabase = await createClient()
   const cost = formData.get('repair_cost')
   const status = formData.get('status')
+  const repair_description = formData.get('repair_description')
   
   if (cost === null || status === null) return { error: 'Faltan datos.' }
   
   const { error } = await supabase
     .from('appointments')
-    .update({ repair_cost: Number(cost), status: status as string })
+    .update({ 
+      repair_cost: Number(cost), 
+      status: status as string,
+      repair_description: repair_description as string || null 
+    })
     .eq('id', appointmentId)
 
   if (error) return { error: error.message }

@@ -107,6 +107,16 @@ export default async function AppointmentDetailsPage({ params }: { params: Promi
                   <option value="cancelled">Cancelada</option>
                 </select>
               </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-semibold text-slate-600 ml-1">Detalle (Opcional)</label>
+                <textarea 
+                  name="repair_description" 
+                  rows={2}
+                  placeholder="Ej: Cambio de aceite 10W40 y filtro de aire..."
+                  defaultValue={appointment.repair_description || ''}
+                  className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 transition-colors resize-none"
+                />
+              </div>
               <button className="cta-button w-full justify-center py-3 mt-2" type="submit">Actualizar Cita</button>
             </form>
           </div>
