@@ -113,8 +113,8 @@ export default async function ClientDashboardPage() {
           </div>
         </div>
 
-        <div className="glass-panel bento-item grid-col-4 flex-col justify-between">
-          <div className="flex items-center gap-2 mb-4">
+        <div className="glass-panel bento-item grid-col-4 self-start h-fit flex-col justify-between">
+          <div className="flex items-center gap-2 mb-2">
             <DollarSign className="text-success" size={20} />
             <h3 className="font-display font-semibold text-lg">Costo Acumulado</h3>
           </div>

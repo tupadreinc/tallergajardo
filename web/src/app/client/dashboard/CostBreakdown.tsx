@@ -31,7 +31,7 @@ export function CostBreakdown({
   }, [])
 
   return (
-    <div className="relative flex-1 w-full h-full flex flex-col items-center justify-center" ref={menuRef}>
+    <div className="relative w-full flex flex-col items-center justify-center py-4" ref={menuRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
         className="text-4xl hover:scale-105 transition-transform cursor-pointer font-display font-bold text-success break-all text-center hover:opacity-80 flex items-center justify-center gap-2"
