@@ -13,7 +13,7 @@ export default async function AdminSettingsPage(props: { searchParams: Promise<{
 
   const todayZoned = toZonedTime(new Date(), TIMEZONE)
   const defaultDateStr = format(todayZoned, 'yyyy-MM-dd')
-  
+
   const selectedDate = date || defaultDateStr
 
   // Fetch settings for the specified date
@@ -40,13 +40,13 @@ export default async function AdminSettingsPage(props: { searchParams: Promise<{
       <div className="glass-panel p-6 sm:p-8">
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-2 pb-4 border-b border-white/10">
-             <CalendarDays className="text-accent-primary" size={20} />
-             <h2 className="font-display font-semibold text-lg">Seleccionar Fecha a Configurar</h2>
+            <CalendarDays className="text-accent-primary" size={20} />
+            <h2 className="font-display font-semibold text-lg">Seleccionar Fecha a Configurar</h2>
           </div>
 
           <form action="" method="GET" className="flex items-center gap-4 mb-4">
-            <input 
-              type="date" name="date" 
+            <input
+              type="date" name="date"
               defaultValue={selectedDate}
               min={defaultDateStr}
               className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent-primary flex-1"
@@ -60,16 +60,16 @@ export default async function AdminSettingsPage(props: { searchParams: Promise<{
           await saveDailySettings(fd)
         }} className="flex flex-col gap-6 mt-6">
           <input type="hidden" name="date" value={selectedDate} />
-          
+
           <div className="flex items-center gap-2 pb-4 border-b border-white/10">
-             <Settings className="text-warning" size={20} />
-             <h2 className="font-display font-semibold text-lg">Ajustes para {format(new Date(selectedDate), 'dd/MM/yyyy')}</h2>
+            <Settings className="text-warning" size={20} />
+            <h2 className="font-display font-semibold text-lg">Ajustes para {format(new Date(selectedDate), 'dd/MM/yyyy')}</h2>
           </div>
 
           <div className="flex items-center gap-3 bg-white/5 p-4 rounded-xl border border-white/10 w-fit">
             <label className="text-sm font-semibold text-text-secondary cursor-pointer flex items-center gap-3">
-              <input 
-                type="checkbox" name="is_working_day" 
+              <input
+                type="checkbox" name="is_working_day"
                 defaultChecked={settings ? settings.is_working_day : true}
                 className="w-5 h-5 accent-accent-primary"
               />
@@ -77,10 +77,10 @@ export default async function AdminSettingsPage(props: { searchParams: Promise<{
             </label>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-text-secondary ml-1">Capacidad Máxima (Cupos)</label>
-              <input 
+              <input
                 name="max_capacity" type="number" min="0" required
                 defaultValue={settings?.max_capacity ?? 8}
                 className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent-primary"
@@ -89,7 +89,7 @@ export default async function AdminSettingsPage(props: { searchParams: Promise<{
 
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-text-secondary ml-1">Hora Inicio</label>
-              <input 
+              <input
                 name="start_time" type="time" required
                 defaultValue={settings?.start_time?.substring(0, 5) ?? '09:00'}
                 className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent-primary"
@@ -98,9 +98,29 @@ export default async function AdminSettingsPage(props: { searchParams: Promise<{
 
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-text-secondary ml-1">Hora Fin</label>
-              <input 
+              <input
                 name="end_time" type="time" required
                 defaultValue={settings?.end_time?.substring(0, 5) ?? '18:00'}
+                className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent-primary"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2 pb-6 border-b border-white/10">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-semibold text-text-secondary ml-1">Inicio Colación (Opcional)</label>
+              <input
+                name="lunch_start_time" type="time"
+                defaultValue={settings?.lunch_start_time?.substring(0, 5) ?? ''}
+                className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent-primary"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-semibold text-text-secondary ml-1">Fin Colación (Opcional)</label>
+              <input
+                name="lunch_end_time" type="time"
+                defaultValue={settings?.lunch_end_time?.substring(0, 5) ?? ''}
                 className="bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent-primary"
               />
             </div>

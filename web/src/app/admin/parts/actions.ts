@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { sendPartRequestEmail } from '@/lib/email'
 
 export async function createRequiredPart(formData: FormData) {
   try {
@@ -15,18 +16,35 @@ export async function createRequiredPart(formData: FormData) {
     }
 
     const supabase = await createClient()
-    
+
     const { error } = await supabase
       .from('required_parts')
       .insert({
-         appointment_id: appointmentId,
-         part_name: partName,
-         required_date: requiredDate,
-         instructions: instructions || null
+        appointment_id: appointmentId,
+        part_name: partName,
+        required_date: requiredDate,
+        instructions: instructions || null
       })
 
     if (error) {
       return { error: error.message }
+    }
+
+    // Enviar correo de repuesto requerido
+    const { data: appData } = await supabase
+      .from('appointments')
+      .select('date, profiles(full_name, id)')
+      .eq('id', appointmentId)
+      .single()
+
+    if (appData?.profiles) {
+      const profile = Array.isArray(appData.profiles) ? appData.profiles[0] : appData.profiles
+      if (profile) {
+        const { data: userEmail } = await supabase.rpc('get_user_email', { user_id: profile.id })
+        if (userEmail) {
+          await sendPartRequestEmail(userEmail, partName, appData.date, profile.full_name)
+        }
+      }
     }
 
     revalidatePath('/admin/parts')
@@ -39,18 +57,18 @@ export async function createRequiredPart(formData: FormData) {
 export async function deleteRequiredPart(formData: FormData) {
   try {
     const id = formData.get('id') as string
-    
+
     if (!id) return { error: 'ID requerido' }
 
     const supabase = await createClient()
-    
+
     const { error } = await supabase
       .from('required_parts')
       .delete()
       .eq('id', id)
 
     if (error) {
-       return { error: error.message }
+      return { error: error.message }
     }
 
     revalidatePath('/admin/parts')

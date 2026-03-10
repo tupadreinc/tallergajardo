@@ -86,39 +86,46 @@ export default async function AdminDashboardPage({
           <h1 className="page-title uppercase text-[2.1rem] md:text-[3rem] leading-tight">ADMIN DASHBOARD</h1>
           <p className="page-subtitle">Resumen diario y control de operaciones del Taller.</p>
         </div>
-        
-        <div className="flex items-center justify-center gap-3">
-          <form action={logout}>
-            <button type="submit" className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 rounded-xl p-2.5 transition-colors flex items-center justify-center" title="Cerrar Sesión">
-              <LogOut size={20} />
+
+        <div className="flex flex-col items-center gap-3">
+          <div className="flex items-center gap-3">
+            <Link href="/admin/clients/new" className="cta-button shadow-sm">
+              <Users size={18} />
+              <span>Nuevo Cliente</span>
+            </Link>
+            <Link href="/admin/settings" className="bg-white border border-slate-200 shadow-sm hover:bg-slate-50 text-slate-700 rounded-xl p-2.5 transition-colors">
+              <Settings size={20} />
+            </Link>
+          </div>
+          <form action={logout} className="w-full">
+            <button type="submit" className="w-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 rounded-xl p-2.5 transition-colors flex items-center justify-center gap-2 font-medium text-sm shadow-sm" title="Cerrar Sesión">
+              <LogOut size={18} />
+              <span>Cerrar sesión</span>
             </button>
           </form>
-          <Link href="/admin/clients/new" className="cta-button">
-            <Users size={18} />
-            <span>Nuevo Cliente</span>
-          </Link>
-          <Link href="/admin/settings" className="bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 rounded-xl p-2.5 transition-colors">
-            <Settings size={20} />
-          </Link>
         </div>
       </header>
 
       {/* Stats row */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="glass-panel p-6 flex flex-col gap-1">
-          <div className="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center text-accent-primary mb-2">
-            <Calendar size={20} />
+        <div className="glass-panel p-6 flex flex-row items-center justify-between gap-4">
+          <div className="flex flex-col gap-1">
+            <div className="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center text-accent-primary mb-2">
+              <Calendar size={20} />
+            </div>
+            <span className="text-text-muted text-sm font-medium uppercase tracking-wide">Citas Registradas</span>
           </div>
-          <span className="text-text-muted text-sm font-medium uppercase tracking-wide">Citas Registradas</span>
-          <span className="text-3xl font-display font-bold text-slate-900 mt-1">{totalAppointments}</span>
+          <span className="text-4xl font-display font-bold text-slate-900">{totalAppointments}</span>
         </div>
 
-        <div className="glass-panel p-6 flex flex-col gap-1">
-          <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center text-success mb-2">
-            <Users size={20} />
+        <div className="glass-panel p-6 flex flex-row items-center justify-between gap-4">
+          <div className="flex flex-col gap-1">
+            <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center text-success mb-2">
+              <Users size={20} />
+            </div>
+            <span className="text-text-muted text-sm font-medium uppercase tracking-wide">Clientes Activos</span>
           </div>
-          <span className="text-text-muted text-sm font-medium uppercase tracking-wide">Clientes Activos</span>
-          <span className="text-3xl font-display font-bold text-slate-900 mt-1">{clientsCount || 0}</span>
+          <span className="text-4xl font-display font-bold text-slate-900">{clientsCount || 0}</span>
         </div>
       </section>
 
@@ -164,8 +171,8 @@ export default async function AdminDashboardPage({
                         <Link key={app.id} href={`/admin/appointments/${app.id}`} className="p-4 sm:p-5 flex flex-row items-center justify-between gap-4 hover:bg-slate-50 transition-colors cursor-pointer">
                           <div className="flex items-start gap-4 flex-1 min-w-0">
                             <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center">
-                               <Clock size={14} className="text-slate-400 mb-0.5" />
-                               <span className="text-xs text-slate-700 font-bold">{app.time.substring(0, 5)}</span>
+                              <Clock size={14} className="text-slate-400 mb-0.5" />
+                              <span className="text-xs text-slate-700 font-bold">{app.time.substring(0, 5)}</span>
                             </div>
                             <div className="flex flex-col min-w-0">
                               <h4 className="font-semibold text-slate-900 truncate">{app.profiles?.full_name}</h4>
@@ -184,7 +191,7 @@ export default async function AdminDashboardPage({
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="flex items-center gap-3">
                             <span className={`hidden sm:inline-flex text-xs font-semibold px-2.5 py-1 rounded-full border capitalize ${statusStyle(app.status)}`}>
                               {statusLabel(app.status)}
@@ -193,17 +200,17 @@ export default async function AdminDashboardPage({
                               {statusLabel(app.status)}
                             </span>
                             <div className="flex-shrink-0 w-8 h-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-text-secondary">
-                               <ChevronRight size={18} />
+                              <ChevronRight size={18} />
                             </div>
                           </div>
                         </Link>
                       ))}
                     </div>
                   ) : (
-                     <div className="p-8 flex flex-col items-center justify-center text-center opacity-60">
-                        <Calendar className="text-slate-300 mb-2" size={24} />
-                        <p className="text-text-secondary text-sm font-medium">Sin reservas agendadas.</p>
-                     </div>
+                    <div className="p-8 flex flex-col items-center justify-center text-center opacity-60">
+                      <Calendar className="text-slate-300 mb-2" size={24} />
+                      <p className="text-text-secondary text-sm font-medium">Sin reservas agendadas.</p>
+                    </div>
                   )}
                 </div>
               </div>
