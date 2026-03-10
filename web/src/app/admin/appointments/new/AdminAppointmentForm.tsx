@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { CalendarDays, Clock, CheckCircle, AlertCircle, Loader2, User } from 'lucide-react'
 import { createAdminAppointment } from './actions'
 import { getAvailableHours } from '@/app/client/appointments/new/actions'
@@ -24,36 +24,34 @@ export function AdminAppointmentForm({ clients }: { clients: Client[] }) {
     const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
     // Fetch availability based on selected date
-    import('react').then(React => {
-        React.useEffect(() => {
-            if (!selectedDate) {
-                setUnavailableHours([])
-                return
+    useEffect(() => {
+        if (!selectedDate) {
+            setUnavailableHours([])
+            return
+        }
+
+        async function fetchHours() {
+            setIsLoadingHours(true)
+            setSelectedTime('')
+
+            const { lockedTimes, hiddenTimes, timeSlots: generatedSlots, error } = await getAvailableHours(selectedDate)
+
+            if (error) {
+                setErrorMsg(error)
+            } else {
+                setErrorMsg(null)
             }
 
-            async function fetchHours() {
-                setIsLoadingHours(true)
-                setSelectedTime('')
+            // Regardless of the error (which blocks normal users), the admin needs these UI arrays to function via Bypass
+            setUnavailableHours(lockedTimes || [])
+            setHiddenHours(hiddenTimes || [])
+            setTimeSlots(generatedSlots || [])
 
-                const { lockedTimes, hiddenTimes, timeSlots: generatedSlots, error } = await getAvailableHours(selectedDate)
+            setIsLoadingHours(false)
+        }
 
-                if (error) {
-                    setErrorMsg(error)
-                } else {
-                    setErrorMsg(null)
-                }
-
-                // Regardless of the error (which blocks normal users), the admin needs these UI arrays to function via Bypass
-                setUnavailableHours(lockedTimes || [])
-                setHiddenHours(hiddenTimes || [])
-                setTimeSlots(generatedSlots || [])
-
-                setIsLoadingHours(false)
-            }
-
-            fetchHours()
-        }, [selectedDate])
-    })
+        fetchHours()
+    }, [selectedDate])
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
