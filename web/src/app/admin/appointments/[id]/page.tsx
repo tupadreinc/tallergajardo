@@ -3,7 +3,7 @@ import { ArrowLeft, User, Calendar, Clock, DollarSign, PackagePlus, Trash2 } fro
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { format } from 'date-fns'
-import { updateRepairCost, addRequiredPart, deleteRequiredPart } from './actions'
+import { updateRepairCost, addRequiredPart, deleteRequiredPart, deleteAppointment } from './actions'
 
 // Use Next.js 16 dynamic route params correctly (in Server Components, params is a Promise or object based on version)
 export default async function AppointmentDetailsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -33,7 +33,7 @@ export default async function AppointmentDetailsPage({ params }: { params: Promi
     'use server'
     await updateRepairCost(id, fd)
   }
-  
+
   const addPartAction = async (fd: FormData) => {
     'use server'
     await addRequiredPart(id, fd)
@@ -60,24 +60,24 @@ export default async function AppointmentDetailsPage({ params }: { params: Promi
             <User className="text-accent-primary" size={20} /> Información del Cliente
           </h2>
           <div className="flex flex-col gap-4">
-             <div>
-               <span className="text-sm text-text-muted">Nombre Completo</span>
-               <p className="font-medium text-slate-900 text-lg">{appointment.profiles.full_name}</p>
-             </div>
-             <div>
-               <span className="text-sm text-text-muted">Contacto</span>
-               <p className="font-medium text-slate-900">{appointment.profiles.phone || 'No registrado'}</p>
-             </div>
-             <div className="grid grid-cols-2 gap-4 mt-2">
-               <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                  <span className="text-xs text-text-muted flex items-center gap-1.5 mb-1"><Calendar size={14}/> Fecha</span>
-                  <p className="font-medium text-sm text-slate-900">{appDate}</p>
-               </div>
-               <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                  <span className="text-xs text-text-muted flex items-center gap-1.5 mb-1"><Clock size={14}/> Hora</span>
-                  <p className="font-medium text-slate-900">{appointment.time.substring(0, 5)} hrs</p>
-               </div>
-             </div>
+            <div>
+              <span className="text-sm text-text-muted">Nombre Completo</span>
+              <p className="font-medium text-slate-900 text-lg">{appointment.profiles.full_name}</p>
+            </div>
+            <div>
+              <span className="text-sm text-text-muted">Contacto</span>
+              <p className="font-medium text-slate-900">{appointment.profiles.phone || 'No registrado'}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-4 mt-2">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="text-xs text-text-muted flex items-center gap-1.5 mb-1"><Calendar size={14} /> Fecha</span>
+                <p className="font-medium text-sm text-slate-900">{appDate}</p>
+              </div>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="text-xs text-text-muted flex items-center gap-1.5 mb-1"><Clock size={14} /> Hora</span>
+                <p className="font-medium text-slate-900">{appointment.time.substring(0, 5)} hrs</p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -88,15 +88,15 @@ export default async function AppointmentDetailsPage({ params }: { params: Promi
           <form action={updateCostAction} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-slate-600 ml-1">Costo de Mantención (CLP)</label>
-              <input 
-                name="repair_cost" type="number" 
+              <input
+                name="repair_cost" type="number"
                 defaultValue={appointment.repair_cost}
                 className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-slate-600 ml-1">Estado de Cita</label>
-              <select 
+              <select
                 name="status" defaultValue={appointment.status}
                 className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none transition-colors appearance-none"
               >
@@ -108,8 +108,8 @@ export default async function AppointmentDetailsPage({ params }: { params: Promi
             </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-slate-600 ml-1">Detalle (Opcional)</label>
-              <textarea 
-                name="repair_description" 
+              <textarea
+                name="repair_description"
                 rows={2}
                 placeholder="Ej: Cambio de aceite 10W40 y filtro de aire..."
                 defaultValue={appointment.repair_description || ''}
@@ -117,6 +117,25 @@ export default async function AppointmentDetailsPage({ params }: { params: Promi
               />
             </div>
             <button className="cta-button w-full justify-center py-3 mt-2" type="submit">Actualizar Cita</button>
+          </form>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-6 max-w-2xl mx-auto w-full mt-2">
+        <div className="glass-panel p-6 border-red-200 bg-red-50/50">
+          <h2 className="font-display font-semibold text-lg flex items-center gap-2 mb-2 text-red-600">
+            <Trash2 className="text-red-500" size={20} /> Zona de Peligro
+          </h2>
+          <p className="text-sm text-slate-600 mb-4">
+            Esta acción eliminará el registro de la reserva de forma permanente.
+          </p>
+          <form action={async () => {
+            'use server'
+            await deleteAppointment(id)
+          }}>
+            <button className="w-full flex justify-center items-center gap-2 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition-colors" type="submit">
+              <Trash2 size={18} /> Eliminar Reserva
+            </button>
           </form>
         </div>
       </div>

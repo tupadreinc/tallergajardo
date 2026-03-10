@@ -18,6 +18,11 @@ const poppinsDisplay = Poppins({
 export const metadata: Metadata = {
   title: "Taller Mecánico App",
   description: "Portal de agendamiento y administración automotriz",
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/taller.jpeg",
+    apple: "/taller.jpeg",
+  },
 };
 
 export default function RootLayout({
