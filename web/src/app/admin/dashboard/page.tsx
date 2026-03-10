@@ -165,16 +165,19 @@ export default async function AdminDashboardPage({
                             <div className="flex flex-col min-w-0">
                               <h4 className="font-semibold text-slate-900 truncate">{app.profiles?.full_name}</h4>
                               <span className="text-sm text-text-muted mt-0.5">{app.profiles?.phone || 'Sin número'}</span>
-                              <div className="flex items-center gap-2 mt-2">
-                                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border capitalize ${statusStyle(app.status)}`}>
-                                  {statusLabel(app.status)}
-                                </span>
-                              </div>
                             </div>
                           </div>
                           
-                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-text-secondary">
-                             <ChevronRight size={18} />
+                          <div className="flex items-center gap-3">
+                            <span className={`hidden sm:inline-flex text-xs font-semibold px-2.5 py-1 rounded-full border capitalize ${statusStyle(app.status)}`}>
+                              {statusLabel(app.status)}
+                            </span>
+                            <span className={`sm:hidden text-[10px] font-semibold px-2 py-0.5 rounded-full border capitalize ${statusStyle(app.status)}`}>
+                              {statusLabel(app.status)}
+                            </span>
+                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-text-secondary">
+                               <ChevronRight size={18} />
+                            </div>
                           </div>
                         </Link>
                       ))}
