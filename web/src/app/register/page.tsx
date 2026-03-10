@@ -13,7 +13,7 @@ export default function RegisterPage() {
     setIsLoading(true)
     setError(null)
     const result = await signUp(formData)
-    
+
     if (result?.error) {
       setError(result.error)
       setIsLoading(false)
@@ -28,19 +28,19 @@ export default function RegisterPage() {
         </Link>
 
         <div className="mb-8 w-full flex justify-center">
-          <img src="/taller.jpeg" alt="Mecánica Gajardo" className="h-20 w-auto object-contain rounded-xl shadow-sm" onError={(e) => {
+          <img src="/taller.jpeg" alt="Mecánica Gajardo" className="h-20 md:h-16 w-auto object-contain rounded border border-white/5 shadow-sm" onError={(e) => {
             (e.target as HTMLImageElement).src = 'https://placehold.co/400x150/ffffff/000000?text=Logo+Aqui'
-          }}/>
+          }} />
         </div>
-        
+
         <h1 className="text-2xl font-display font-bold mb-2">Crear tu Cuenta</h1>
         <p className="text-gray-500 mb-8 text-center text-sm">Regístrate para agendar visitas al taller mecánico.</p>
 
         <form action={handleSubmit} className="w-full flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-semibold text-gray-700 ml-1" htmlFor="fullName">Nombre Completo</label>
-            <input 
-              id="fullName" name="fullName" type="text" required 
+            <input
+              id="fullName" name="fullName" type="text" required
               className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-success focus:ring-1 focus:ring-success transition-all duration-300"
               placeholder="Ej: Laura Gómez"
             />
@@ -48,8 +48,8 @@ export default function RegisterPage() {
 
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-semibold text-gray-700 ml-1" htmlFor="phone">Celular</label>
-            <input 
-              id="phone" name="phone" type="tel" 
+            <input
+              id="phone" name="phone" type="tel"
               className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-success focus:ring-1 focus:ring-success transition-all duration-300"
               placeholder="+56 9 0000 0000"
             />
@@ -57,8 +57,8 @@ export default function RegisterPage() {
 
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-semibold text-gray-700 ml-1" htmlFor="email">Correo Electrónico</label>
-            <input 
-              id="email" name="email" type="email" required 
+            <input
+              id="email" name="email" type="email" required
               className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-success focus:ring-1 focus:ring-success transition-all duration-300"
               placeholder="tu@correo.com"
             />
@@ -66,7 +66,7 @@ export default function RegisterPage() {
 
           <div className="flex flex-col gap-1.5 mb-2">
             <label className="text-sm font-semibold text-gray-700 ml-1" htmlFor="password">Contraseña</label>
-            <input 
+            <input
               id="password" name="password" type="password" required minLength={6}
               className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-success focus:ring-1 focus:ring-success transition-all duration-300"
               placeholder="Min. 6 caracteres"
@@ -79,8 +79,8 @@ export default function RegisterPage() {
             </div>
           )}
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={isLoading}
             className="w-full justify-center py-3.5 rounded-xl group relative overflow-hidden disabled:opacity-70 bg-success hover:bg-emerald-600 text-white font-medium transition-all shadow-lg shadow-emerald-500/20"
           >

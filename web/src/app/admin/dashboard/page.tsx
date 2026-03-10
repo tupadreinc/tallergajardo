@@ -80,10 +80,7 @@ export default async function AdminDashboardPage({
     <div className="flex flex-col gap-8 pb-12 w-full">
       <header className="page-header mb-6 flex flex-col items-center justify-center gap-6">
         <div className="flex flex-col items-center text-center w-full">
-          <div className="mb-2 flex justify-center">
-            <img src="/taller.jpeg" alt="Mecánica Gajardo" className="h-20 md:h-16 w-auto object-contain rounded border border-white/5" />
-          </div>
-          <h1 className="page-title uppercase text-[2.1rem] md:text-[3rem] leading-tight">ADMIN DASHBOARD</h1>
+          <h1 className="page-title uppercase text-[2.1rem] md:text-[3rem] leading-tight mt-2">ADMIN DASHBOARD</h1>
           <p className="page-subtitle">Resumen diario y control de operaciones del Taller.</p>
         </div>
 

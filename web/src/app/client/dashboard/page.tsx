@@ -50,10 +50,7 @@ export default async function ClientDashboardPage() {
     <div className="flex flex-col gap-8 pb-12">
       <header className="page-header mb-6 flex flex-col items-center justify-center gap-6">
         <div className="flex flex-col items-center text-center w-full">
-          <div className="mb-2 flex justify-center">
-            <img src="/taller.jpeg" alt="Mecánica Gajardo" className="h-20 md:h-16 w-auto object-contain rounded border border-white/5" />
-          </div>
-          <h1 className="page-title uppercase text-[2.1rem] md:text-[3rem] leading-tight">HOLA, {profile?.full_name?.split(' ')[0].toUpperCase() || 'CLIENTE'}!</h1>
+          <h1 className="page-title uppercase text-[2.1rem] md:text-[3rem] leading-tight mt-2">HOLA, {profile?.full_name?.split(' ')[0].toUpperCase() || 'CLIENTE'}!</h1>
           <p className="page-subtitle">Revisa el estado de tus mantenciones y servicios.</p>
         </div>
         <div className="flex flex-col items-center justify-center w-full max-w-[280px] mx-auto gap-3 mt-2">
@@ -94,9 +91,9 @@ export default async function ClientDashboardPage() {
                     </div>
                     <div className="relative z-10 flex-shrink-0">
                       <span className={`inline-flex items-center justify-center rounded-full px-3 py-1 border text-[10px] md:text-xs font-medium uppercase tracking-wider whitespace-nowrap ${app.status === 'completed' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700' :
-                          app.status === 'confirmed' ? 'bg-blue-500/10 border-blue-500/20 text-blue-700' :
-                            app.status === 'cancelled' ? 'bg-red-500/10 border-red-500/20 text-red-600' :
-                              'bg-amber-500/10 border-amber-500/20 text-amber-700'
+                        app.status === 'confirmed' ? 'bg-blue-500/10 border-blue-500/20 text-blue-700' :
+                          app.status === 'cancelled' ? 'bg-red-500/10 border-red-500/20 text-red-600' :
+                            'bg-amber-500/10 border-amber-500/20 text-amber-700'
                         }`}>
                         {app.status === 'confirmed' ? 'Confirmada' : app.status === 'completed' ? 'Completada' : app.status === 'cancelled' ? 'Cancelada' : 'Pendiente'}
                       </span>
