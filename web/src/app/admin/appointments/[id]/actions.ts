@@ -1,11 +1,12 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, isAdminUser } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { sendStatusEmail, sendPartRequestEmail } from '@/lib/email'
 
 export async function deleteAppointment(appointmentId: string) {
+  if (!(await isAdminUser())) return { error: 'No autorizado' }
   const supabase = await createClient()
 
   const { error } = await supabase
@@ -20,6 +21,7 @@ export async function deleteAppointment(appointmentId: string) {
 }
 
 export async function updateRepairCost(appointmentId: string, formData: FormData) {
+  if (!(await isAdminUser())) return { error: 'No autorizado' }
   const supabase = await createClient()
   const cost = formData.get('repair_cost')
   const status = formData.get('status')
@@ -61,6 +63,7 @@ export async function updateRepairCost(appointmentId: string, formData: FormData
 }
 
 export async function addRequiredPart(appointmentId: string, formData: FormData) {
+  if (!(await isAdminUser())) return { error: 'No autorizado' }
   const supabase = await createClient()
   const partName = formData.get('part_name')
   const instructions = formData.get('instructions')
@@ -99,6 +102,7 @@ export async function addRequiredPart(appointmentId: string, formData: FormData)
 }
 
 export async function deleteRequiredPart(appointmentId: string, partId: string) {
+  if (!(await isAdminUser())) return { error: 'No autorizado' }
   const supabase = await createClient()
 
   const { error } = await supabase

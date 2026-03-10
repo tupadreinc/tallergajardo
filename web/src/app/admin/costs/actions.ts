@@ -1,9 +1,13 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, isAdminUser } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 export async function updatePaymentStatus(appointmentId: string, status: string) {
+  if (!(await isAdminUser())) {
+    throw new Error('No autorizado: Se requiere rol de administrador')
+  }
+
   const supabase = await createClient()
 
   const { error } = await supabase

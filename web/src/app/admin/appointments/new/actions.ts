@@ -1,10 +1,12 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, isAdminUser } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 export async function createAdminAppointment(formData: FormData) {
+    if (!(await isAdminUser())) return { error: 'No autorizado' }
+
     const supabase = await createClient()
 
     const client_id = formData.get('client_id') as string

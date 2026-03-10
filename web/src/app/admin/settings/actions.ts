@@ -1,9 +1,10 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, isAdminUser } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 export async function saveDailySettings(formData: FormData) {
+  if (!(await isAdminUser())) return { error: 'No autorizado' }
   const supabase = await createClient()
 
   const date = formData.get('date') as string
@@ -35,6 +36,7 @@ export async function saveDailySettings(formData: FormData) {
 }
 
 export async function saveGlobalSettings(formData: FormData) {
+  if (!(await isAdminUser())) return { error: 'No autorizado' }
   const supabase = await createClient()
 
   const block_sundays = formData.get('block_sundays') === 'on'

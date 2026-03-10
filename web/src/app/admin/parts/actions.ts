@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, isAdminUser } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { sendPartRequestEmail } from '@/lib/email'
 
@@ -13,6 +13,10 @@ export async function createRequiredPart(formData: FormData) {
 
     if (!appointmentId || !partName || !requiredDate) {
       return { error: 'Cita, Nombre del Repuesto y Fecha Requerida son obligatorios.' }
+    }
+
+    if (!(await isAdminUser())) {
+      return { error: 'No autorizado: Se requiere rol de administrador' }
     }
 
     const supabase = await createClient()
@@ -59,6 +63,10 @@ export async function deleteRequiredPart(formData: FormData) {
     const id = formData.get('id') as string
 
     if (!id) return { error: 'ID requerido' }
+
+    if (!(await isAdminUser())) {
+      return { error: 'No autorizado: Se requiere rol de administrador' }
+    }
 
     const supabase = await createClient()
 
