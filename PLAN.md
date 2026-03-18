@@ -9,7 +9,7 @@
 - [ ] 6. Final Sync & Deploy.
 
 ## Current Trajectory
-**Paso activo:** Verified & Polished. Se han integrado notificaciones por email al cambiar estados (incluyendo nuevo estado "Pendiente") o al recetar repuestos mediante Resend. Envío condicionado a variable de entorno.
+**Paso activo:** Verified & Polished. Se han corregido errores críticos de seguridad (RLS) y optimizado el rendimiento (índices, cacheo de políticas RLS) en Supabase. El proyecto cumple ahora con los estándares del Security y Performance Advisor de Supabase. Se integraron notificaciones por email al cambiar estados o recetar repuestos mediante Resend. Envío condicionado a variable de entorno.
 
 ## Squad Status
 | Agent | Task | Status |
